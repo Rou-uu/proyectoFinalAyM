@@ -1,0 +1,61 @@
+%% Diagrama UML de clases del codigo fuente (src/) del Proyecto Final.
+%% Render online: https://mermaid.live  (o cualquier visor Mermaid).
+classDiagram
+    direction LR
+
+    class PasoLimpieza {
+        <<abstract>>
+        +str nombre
+        +aplicar(df) df
+    }
+    class QuitarDuplicados {
+        +aplicar(df) df
+    }
+    class QuitarAnioRuido {
+        +aplicar(df) df
+    }
+    class ConstruirTarget {
+        +aplicar(df) df
+    }
+    class PipelinePreparacion {
+        +list~PasoLimpieza~ pasos
+        +list bitacora
+        +aplicar(df, verbose) df
+    }
+    PasoLimpieza <|-- QuitarDuplicados
+    PasoLimpieza <|-- QuitarAnioRuido
+    PasoLimpieza <|-- ConstruirTarget
+    PipelinePreparacion o-- "1..*" PasoLimpieza : compone
+
+    class ModeloClasificador {
+        <<abstract>>
+        +list numericas
+        +list categoricas
+        +construir(**params) Pipeline
+        #_ramas()*
+        #_crear_estimador(**params)*
+        #_preprocesador() ColumnTransformer
+    }
+    class ModeloRandomForest {
+        +bool imputar_num
+        #_ramas()
+        #_crear_estimador(**params)
+    }
+    class ModeloMLP {
+        #_ramas()
+        #_crear_estimador(**params)
+    }
+    ModeloClasificador <|-- ModeloRandomForest
+    ModeloClasificador <|-- ModeloMLP
+
+    class ClusteringEspacial {
+        +float lat0
+        +float lon0
+        +float eps
+        +int min_samples
+        +proyectar(lat, lon)
+        +desproyectar(x, y)
+        +matriz_coords(df)
+        +curva_kdistance(X)
+        +ajustar(X) labels
+    }

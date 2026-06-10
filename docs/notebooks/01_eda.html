@@ -183,14 +183,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#analisis-de-codigo_cierre-por-que-eliminamos-los-duplicados" id="toc-analisis-de-codigo_cierre-por-que-eliminamos-los-duplicados" class="nav-link" data-scroll-target="#analisis-de-codigo_cierre-por-que-eliminamos-los-duplicados">2.1 Analisis de <code>codigo_cierre</code>: por que eliminamos los duplicados</a></li>
   <li><a href="#la-clase-pipelinepreparacion-y-los-pasos" id="toc-la-clase-pipelinepreparacion-y-los-pasos" class="nav-link" data-scroll-target="#la-clase-pipelinepreparacion-y-los-pasos">2.2 La clase <code>PipelinePreparacion</code> y los pasos</a></li>
-  </ul></li>
-  <li><a href="#analisis-exploratorio-dataset-depurado-289885-filas" id="toc-analisis-exploratorio-dataset-depurado-289885-filas" class="nav-link" data-scroll-target="#analisis-exploratorio-dataset-depurado-289885-filas">3. Analisis exploratorio (dataset depurado, 289,885 filas)</a>
-  <ul class="collapse">
   <li><a href="#calidad-de-los-datos-faltantes-y-duplicados" id="toc-calidad-de-los-datos-faltantes-y-duplicados" class="nav-link" data-scroll-target="#calidad-de-los-datos-faltantes-y-duplicados">3.1 Calidad de los datos: faltantes y duplicados</a></li>
   <li><a href="#estadistica-descriptiva-hora-y-tiempo_cierre_min" id="toc-estadistica-descriptiva-hora-y-tiempo_cierre_min" class="nav-link" data-scroll-target="#estadistica-descriptiva-hora-y-tiempo_cierre_min">3.2 Estadistica descriptiva: <code>HORA</code> y <code>TIEMPO_CIERRE_MIN</code></a></li>
   <li><a href="#valores-atipicos-en-tiempo_cierre_min-boxplot-regla-iqr" id="toc-valores-atipicos-en-tiempo_cierre_min-boxplot-regla-iqr" class="nav-link" data-scroll-target="#valores-atipicos-en-tiempo_cierre_min-boxplot-regla-iqr">3.3 Valores atipicos en <code>TIEMPO_CIERRE_MIN</code> (boxplot + regla IQR)</a></li>
   <li><a href="#distribuciones-hora-franja-y-dia_semana" id="toc-distribuciones-hora-franja-y-dia_semana" class="nav-link" data-scroll-target="#distribuciones-hora-franja-y-dia_semana">3.4 Distribuciones: <code>HORA</code>, <code>FRANJA</code> y <code>dia_semana</code></a></li>
   <li><a href="#balance-del-target-real-decision-de-diseno" id="toc-balance-del-target-real-decision-de-diseno" class="nav-link" data-scroll-target="#balance-del-target-real-decision-de-diseno">3.5 Balance del target <code>REAL</code> (decision de diseno)</a></li>
+  <li><a href="#correlaciones-entre-numericas-y-dispersion-espacial" id="toc-correlaciones-entre-numericas-y-dispersion-espacial" class="nav-link" data-scroll-target="#correlaciones-entre-numericas-y-dispersion-espacial">3.6 Correlaciones entre numericas y dispersion espacial</a></li>
   </ul></li>
   <li><a href="#geografia-del-reporte-quien-reporta-donde-y-que-tan-confiable-es" id="toc-geografia-del-reporte-quien-reporta-donde-y-que-tan-confiable-es" class="nav-link" data-scroll-target="#geografia-del-reporte-quien-reporta-donde-y-que-tan-confiable-es">4. Geografia del reporte: ¿quien reporta, donde y que tan confiable es?</a>
   <ul class="collapse">
@@ -246,32 +244,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="configuracion" class="level2">
 <h2 class="anchored" data-anchor-id="configuracion">0. Configuracion</h2>
 <p>Primero, importamos librerias, fijamos la semilla y resolvemos las rutas a <code>data/</code> con <code>pathlib</code>, relativas a la ubicacion del notebook (<code>notebooks/</code>), para que el cuaderno corra sin importar el directorio de trabajo.</p>
-<div id="fc57dfd0" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-10T08:49:09.659835Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-10T08:49:09.659630Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-10T08:49:10.962797Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-10T08:49:10.962601Z&quot;}}" data-execution_count="1">
+<div id="fc57dfd0" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-10T11:19:50.919914Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-10T11:19:50.919667Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-10T11:19:52.156715Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-10T11:19:52.156525Z&quot;}}" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy <span class="im">import</span> stats</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>SEMILLA <span class="op">=</span> <span class="dv">42</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>np.random.seed(SEMILLA)</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>sns.set_theme(style<span class="op">=</span><span class="st">"whitegrid"</span>)</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">"figure.dpi"</span>] <span class="op">=</span> <span class="dv">110</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>pd.set_option(<span class="st">"display.max_columns"</span>, <span class="dv">50</span>)</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Rutas relativas a la ubicacion del notebook (carpeta notebooks/).</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>BASE <span class="op">=</span> Path.cwd() <span class="cf">if</span> (Path.cwd() <span class="op">/</span> <span class="st">"data"</span>).exists() <span class="cf">else</span> Path.cwd().parent</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>DATA <span class="op">=</span> BASE <span class="op">/</span> <span class="st">"data"</span></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>FIGURES <span class="op">=</span> BASE <span class="op">/</span> <span class="st">"figures"</span></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>REPORTS <span class="op">=</span> BASE <span class="op">/</span> <span class="st">"reports"</span></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>FIGURES.mkdir(exist_ok<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>REPORTS.mkdir(exist_ok<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"BASE   :"</span>, BASE)</span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"DATA   :"</span>, DATA)</span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Semilla:"</span>, SEMILLA)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>SEMILLA <span class="op">=</span> <span class="dv">42</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>np.random.seed(SEMILLA)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>sns.set_theme(style<span class="op">=</span><span class="st">"whitegrid"</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">"figure.dpi"</span>] <span class="op">=</span> <span class="dv">110</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>pd.set_option(<span class="st">"display.max_columns"</span>, <span class="dv">50</span>)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Rutas relativas a la ubicacion del notebook (carpeta notebooks/).</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>BASE <span class="op">=</span> Path.cwd() <span class="cf">if</span> (Path.cwd() <span class="op">/</span> <span class="st">"data"</span>).exists() <span class="cf">else</span> Path.cwd().parent</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>DATA <span class="op">=</span> BASE <span class="op">/</span> <span class="st">"data"</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>FIGURES <span class="op">=</span> BASE <span class="op">/</span> <span class="st">"figures"</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>REPORTS <span class="op">=</span> BASE <span class="op">/</span> <span class="st">"reports"</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>FIGURES.mkdir(exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>REPORTS.mkdir(exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="co"># El codigo fuente vive en src/ (clases y modulos). Lo importamos:</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">str</span>(BASE) <span class="kw">not</span> <span class="kw">in</span> sys.path:</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    sys.path.insert(<span class="dv">0</span>, <span class="bu">str</span>(BASE))</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> src.preparacion <span class="im">import</span> PipelinePreparacion, pipeline_estandar</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> src.viz <span class="im">import</span> barras, guardar, resumen_numerico</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"BASE   :"</span>, BASE)</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"DATA   :"</span>, DATA)</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Semilla:"</span>, SEMILLA)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>BASE   : /Users/rou/Desktop/8voSemestre/Almacenes/finalProyectoAyM
 DATA   : /Users/rou/Desktop/8voSemestre/Almacenes/finalProyectoAyM/data
@@ -432,7 +437,7 @@ Semilla: 42</code></pre>
 <section id="respaldo-empirico-del-diccionario" class="level3">
 <h3 class="anchored" data-anchor-id="respaldo-empirico-del-diccionario">1.1 Respaldo empirico del diccionario</h3>
 <p>Verificamos los tipos reales de cada columna y los valores efectivos de las categoricas clave y las numericas. Cargamos directamente el dataset de trabajo ya depurado <code>c5_listo.parquet</code>.</p>
-<div id="aa624156" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-10T08:49:10.964017Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-10T08:49:10.963922Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-10T08:49:11.062841Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-10T08:49:11.062637Z&quot;}}" data-execution_count="2">
+<div id="aa624156" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-10T11:19:52.157835Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-10T11:19:52.157743Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-10T11:19:52.263826Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-10T11:19:52.263634Z&quot;}}" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_parquet(DATA <span class="op">/</span> <span class="st">"c5_listo.parquet"</span>)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Dimensiones del dataset de trabajo (c5_listo):"</span>, df.shape)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -531,7 +536,7 @@ Semilla: 42</code></pre>
 </div>
 </div>
 </div>
-<div id="462df268" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-10T08:49:11.063974Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-10T08:49:11.063920Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-10T08:49:11.088591Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-10T08:49:11.088347Z&quot;}}" data-execution_count="3">
+<div id="462df268" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-10T11:19:52.264846Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-10T11:19:52.264782Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-10T11:19:52.290881Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-10T11:19:52.290673Z&quot;}}" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Valores reales de las categoricas clave (respaldo de "valores posibles").</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> col <span class="kw">in</span> [<span class="st">"codigo_cierre"</span>, <span class="st">"tipo_incidente_c4"</span>, <span class="st">"tipo_entrada"</span>, <span class="st">"FRANJA"</span>, <span class="st">"dia_semana"</span>]:</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">### </span><span class="sc">{</span>col<span class="sc">}</span><span class="ss">  (</span><span class="sc">{</span>df[col]<span class="sc">.</span>nunique(dropna<span class="op">=</span><span class="va">True</span>)<span class="sc">}</span><span class="ss"> categorias)"</span>)</span>
@@ -585,7 +590,7 @@ Martes       39468
 Lunes        37694</code></pre>
 </div>
 </div>
-<div id="33e6afa7" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-10T08:49:11.089610Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-10T08:49:11.089560Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-10T08:49:11.117218Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-10T08:49:11.117012Z&quot;}}" data-execution_count="4">
+<div id="33e6afa7" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-10T11:19:52.291853Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-10T11:19:52.291802Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-10T11:19:52.319992Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-10T11:19:52.319827Z&quot;}}" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Rango/estadistica de las numericas (respaldo de "rango").</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>df[[<span class="st">"HORA"</span>, <span class="st">"MES"</span>, <span class="st">"ANIO"</span>, <span class="st">"latitud"</span>, <span class="st">"longitud"</span>, <span class="st">"TIEMPO_CIERRE_MIN"</span>]].describe().T</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="4">
@@ -679,7 +684,7 @@ Lunes        37694</code></pre>
 </div>
 </div>
 </div>
-<div id="41cfe03a" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-10T08:49:11.118203Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-10T08:49:11.118151Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-10T08:49:11.122249Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-10T08:49:11.122075Z&quot;}}" data-execution_count="5">
+<div id="41cfe03a" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-10T11:19:52.320920Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-10T11:19:52.320871Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-10T11:19:52.323699Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-10T11:19:52.323540Z&quot;}}" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Escribimos el mismo diccionario a reports/diccionario_datos.md (tabla markdown).</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>diccionario_md <span class="op">=</span> <span class="st">"""# Diccionario de datos - C5 incidentes viales (CDMX 2022-2024)</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -736,7 +741,7 @@ Lunes        37694</code></pre>
 <h2 class="anchored" data-anchor-id="preparacion-de-datos">2. Preparacion de datos</h2>
 <p>Aqui mostramos <strong>como</strong> se obtuvo el dataset de trabajo a partir del dataset crudo de modelado, aplicando el <strong>patron de diseno Pipeline</strong>. Encadenamos pasos (cada uno una funcion <code>df -&gt; df</code>) en orden, registrando las filas antes y despues de cada paso en una <strong>bitacora auditable</strong>.</p>
 <p>Partimos de <code>c5_modelado.parquet</code> (504,261 filas, <strong>antes</strong> de depurar: conserva <code>codigo_cierre</code> y todas las columnas).</p>
-<div id="d48a21a0" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-10T08:49:11.123210Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-10T08:49:11.123163Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-10T08:49:11.165101Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-10T08:49:11.164852Z&quot;}}" data-execution_count="6">
+<div id="d48a21a0" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-10T11:19:52.324585Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-10T11:19:52.324530Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-10T11:19:52.368327Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-10T11:19:52.368118Z&quot;}}" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>crudo <span class="op">=</span> pd.read_parquet(DATA <span class="op">/</span> <span class="st">"c5_modelado.parquet"</span>)</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Dataset de modelado (antes de depurar):"</span>, crudo.shape)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>crudo[[<span class="st">"folio"</span>, <span class="st">"codigo_cierre"</span>, <span class="st">"ANIO"</span>, <span class="st">"tipo_entrada"</span>]].head(<span class="dv">3</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -788,7 +793,7 @@ Lunes        37694</code></pre>
 <section id="analisis-de-codigo_cierre-por-que-eliminamos-los-duplicados" class="level3">
 <h3 class="anchored" data-anchor-id="analisis-de-codigo_cierre-por-que-eliminamos-los-duplicados">2.1 Analisis de <code>codigo_cierre</code>: por que eliminamos los duplicados</h3>
 <p>El target nace de <code>codigo_cierre</code>. Veamos su distribucion.</p>
-<div id="b2e94b30" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-10T08:49:11.166219Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-10T08:49:11.166149Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-10T08:49:11.176729Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-10T08:49:11.176544Z&quot;}}" data-execution_count="7">
+<div id="b2e94b30" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-10T11:19:52.369425Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-10T11:19:52.369367Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-10T11:19:52.384073Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-10T11:19:52.383861Z&quot;}}" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>cc <span class="op">=</span> crudo[<span class="st">"codigo_cierre"</span>].value_counts(dropna<span class="op">=</span><span class="va">False</span>)</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>cc_pct <span class="op">=</span> (crudo[<span class="st">"codigo_cierre"</span>].value_counts(normalize<span class="op">=</span><span class="va">True</span>, dropna<span class="op">=</span><span class="va">False</span>) <span class="op">*</span> <span class="dv">100</span>).<span class="bu">round</span>(<span class="dv">2</span>)</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>tabla_cc <span class="op">=</span> pd.DataFrame({<span class="st">"conteo"</span>: cc, <span class="st">"porcentaje"</span>: cc_pct})</span>
@@ -846,46 +851,25 @@ Lunes        37694</code></pre>
 </section>
 <section id="la-clase-pipelinepreparacion-y-los-pasos" class="level3">
 <h3 class="anchored" data-anchor-id="la-clase-pipelinepreparacion-y-los-pasos">2.2 La clase <code>PipelinePreparacion</code> y los pasos</h3>
-<p>Definimos la clase del patron y los tres pasos (<code>quitar_duplicados</code>, <code>quitar_anio_ruido</code>, <code>construir_target</code>). Cada paso es una funcion pura <code>df -&gt; df</code>; la clase los encadena e imprime la bitacora.</p>
-<div id="17b165bc" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-10T08:49:11.177760Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-10T08:49:11.177708Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-10T08:49:11.180148Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-10T08:49:11.179977Z&quot;}}" data-execution_count="8">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> PipelinePreparacion:</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Patron de diseno Pipeline: encadena pasos (funcion df-&gt;df) en orden,</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co">    registrando filas antes/despues de cada uno (bitacora auditable)."""</span></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, pasos):</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.pasos <span class="op">=</span> pasos</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.bitacora <span class="op">=</span> []</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> aplicar(<span class="va">self</span>, df):</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> nombre, paso <span class="kw">in</span> <span class="va">self</span>.pasos:</span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>            antes <span class="op">=</span> <span class="bu">len</span>(df)</span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>            df <span class="op">=</span> paso(df)</span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.bitacora.append((nombre, antes, <span class="bu">len</span>(df)))</span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f"  </span><span class="sc">{</span>nombre<span class="sc">:28s}</span><span class="ss"> </span><span class="sc">{</span>antes<span class="sc">:&gt;8,}</span><span class="ss"> -&gt; </span><span class="sc">{</span><span class="bu">len</span>(df)<span class="sc">:&gt;8,}</span><span class="ss">"</span>)</span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> df</span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> quitar_duplicados(df):   <span class="co"># 'D' = evento real ya reportado -&gt; dedup es del despacho</span></span>
-<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df[df[<span class="st">"codigo_cierre"</span>] <span class="op">!=</span> <span class="st">"D"</span>].copy()</span>
-<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> quitar_anio_ruido(df):   <span class="co"># 2021 = decenas de reportes de frontera (dic-2021)</span></span>
-<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df[df[<span class="st">"ANIO"</span>] <span class="op">&gt;=</span> <span class="dv">2022</span>].copy()</span>
-<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> construir_target(df):</span>
-<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.copy()</span>
-<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">"REAL"</span>] <span class="op">=</span> (df[<span class="st">"codigo_cierre"</span>] <span class="op">==</span> <span class="st">"A"</span>).astype(<span class="st">"int8"</span>)</span>
-<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>La clase <code>PipelinePreparacion</code> y los pasos de limpieza viven en <code>src/preparacion.py</code>. Cada paso es una <strong>subclase</strong> de <code>PasoLimpieza</code> (<code>QuitarDuplicados</code>, <code>QuitarAnioRuido</code>, <code>ConstruirTarget</code>) con una unica responsabilidad (herencia); <code>PipelinePreparacion</code> los <strong>encadena</strong> (composicion) e imprime la bitacora. Aqui los importamos y aplicamos.</p>
+<div id="17b165bc" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-10T11:19:52.385111Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-10T11:19:52.385046Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-10T11:19:52.386924Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-10T11:19:52.386777Z&quot;}}" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># La clase y los pasos se importan de src/preparacion.py (ver celda de</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># configuracion). pipeline_estandar() arma el pipeline del proyecto:</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   QuitarDuplicados -&gt; QuitarAnioRuido -&gt; ConstruirTarget</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> src.preparacion <span class="im">import</span> (PipelinePreparacion, QuitarDuplicados,</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>                             QuitarAnioRuido, ConstruirTarget, pipeline_estandar)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Pasos del pipeline:"</span>, [p.nombre <span class="cf">for</span> p <span class="kw">in</span> pipeline_estandar().pasos])</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Pasos del pipeline: ['quitar_duplicados', 'quitar_anio_ruido', 'construir_target']</code></pre>
 </div>
-<div id="2b988141" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-10T08:49:11.181115Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-10T08:49:11.181065Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-10T08:49:11.244719Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-10T08:49:11.244490Z&quot;}}" data-execution_count="9">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Aplicamos el pipeline y observamos la bitacora paso a paso.</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>pipeline <span class="op">=</span> PipelinePreparacion([</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"quitar_duplicados"</span>, quitar_duplicados),</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"quitar_anio_ruido"</span>, quitar_anio_ruido),</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"construir_target"</span>,  construir_target),</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>])</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Bitacora del pipeline de preparacion:"</span>)</span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>listo <span class="op">=</span> pipeline.aplicar(crudo)</span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Resultado final:"</span>, listo.shape)</span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Coincide con c5_listo.parquet (289,885 filas):"</span>, <span class="bu">len</span>(listo) <span class="op">==</span> <span class="dv">289885</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="2b988141" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-10T11:19:52.387755Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-10T11:19:52.387711Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-10T11:19:52.451410Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-10T11:19:52.451183Z&quot;}}" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Aplicamos el pipeline (definido en src/) y observamos la bitacora.</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>pipeline <span class="op">=</span> pipeline_estandar()</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Bitacora del pipeline de preparacion:"</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>listo <span class="op">=</span> pipeline.aplicar(crudo)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Resultado final:"</span>, listo.shape)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Coincide con c5_listo.parquet (289,885 filas):"</span>, <span class="bu">len</span>(listo) <span class="op">==</span> <span class="dv">289885</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Bitacora del pipeline de preparacion:
   quitar_duplicados             504,261 -&gt;  289,935
@@ -899,47 +883,38 @@ Coincide con c5_listo.parquet (289,885 filas): True</code></pre>
 <p><strong>Interpretacion del patron Pipeline.</strong> La bitacora deja la trazabilidad completa: <strong>504,261 -&gt; 289,935 -&gt; 289,885</strong>.</p>
 <p>El primer paso retira los 214,326 duplicados <code>D</code> el segundo elimina los 50 reportes de <strong>2021</strong> (ruido de frontera: unos cuantos reportes con fecha de diciembre-2021 que se colaron en el corte 2022-2024), el tercero construye el target binario <code>REAL</code>. Cada paso es una funcion pequeña y verificable, y agregar o quitar un paso es trivial. Por eso preferimos usar este patrón.</p>
 <p>El resultado en memoria es <strong>identico</strong> al archivo <code>data/c5_listo.parquet</code> que ya cargamos en la seccion 1 (no reescribimos a disco). En adelante seguimos con ese dataset de trabajo de <strong>289,885 filas</strong>.</p>
-<div id="08a32716" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-10T08:49:11.245762Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-10T08:49:11.245709Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-10T08:49:11.248341Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-10T08:49:11.248162Z&quot;}}" data-execution_count="10">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Confirmamos el balance del target sobre el dataset depurado.</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>balance <span class="op">=</span> df[<span class="st">"REAL"</span>].value_counts(normalize<span class="op">=</span><span class="va">True</span>).sort_index()</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Balance del target REAL:"</span>)</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"  0 (falso/informativo): </span><span class="sc">{</span>balance[<span class="dv">0</span>]<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"  1 (afirmativo/real)  : </span><span class="sc">{</span>balance[<span class="dv">1</span>]<span class="sc">:.3f}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="08a32716" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-10T11:19:52.452422Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-10T11:19:52.452370Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-10T11:19:52.457312Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-10T11:19:52.457145Z&quot;}}" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Confirmamos el balance del target sobre el dataset depurado.</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>balance <span class="op">=</span> df[<span class="st">"REAL"</span>].value_counts(normalize<span class="op">=</span><span class="va">True</span>).sort_index()</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Balance del target REAL:"</span>)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"  0 (falso/informativo): </span><span class="sc">{</span>balance[<span class="dv">0</span>]<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"  1 (afirmativo/real)  : </span><span class="sc">{</span>balance[<span class="dv">1</span>]<span class="sc">:.3f}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Balance del target REAL:
   0 (falso/informativo): 0.365
   1 (afirmativo/real)  : 0.635</code></pre>
 </div>
 </div>
-</section>
-</section>
-<section id="analisis-exploratorio-dataset-depurado-289885-filas" class="level2">
-<h2 class="anchored" data-anchor-id="analisis-exploratorio-dataset-depurado-289885-filas">3. Analisis exploratorio (dataset depurado, 289,885 filas)</h2>
-<p>Algunas funciones auxiliares</p>
-<div id="987e1167" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-10T08:49:11.249302Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-10T08:49:11.249255Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-10T08:49:11.251174Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-10T08:49:11.251006Z&quot;}}" data-execution_count="11">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Helpers simples de graficado (inline, estilo Tarea 2).</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> barras(serie, titulo, xlabel, ax<span class="op">=</span><span class="va">None</span>, color<span class="op">=</span><span class="st">"steelblue"</span>, rot<span class="op">=</span><span class="dv">0</span>):</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    ax <span class="op">=</span> ax <span class="kw">or</span> plt.gca()</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    serie.plot(kind<span class="op">=</span><span class="st">"bar"</span>, ax<span class="op">=</span>ax, color<span class="op">=</span>color, edgecolor<span class="op">=</span><span class="st">"black"</span>, linewidth<span class="op">=</span><span class="fl">.4</span>)</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    ax.set_title(titulo)<span class="op">;</span> ax.set_xlabel(xlabel)<span class="op">;</span> ax.set_ylabel(<span class="st">"conteo"</span>)</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    ax.tick_params(axis<span class="op">=</span><span class="st">"x"</span>, rotation<span class="op">=</span>rot)</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> ax</span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> guardar(fig, nombre):</span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    ruta <span class="op">=</span> FIGURES <span class="op">/</span> nombre</span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    fig.savefig(ruta, bbox_inches<span class="op">=</span><span class="st">"tight"</span>, dpi<span class="op">=</span><span class="dv">120</span>)</span>
-<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Figura guardada:"</span>, ruta)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Las funciones auxiliares de graficado (<code>barras</code>, <code>guardar</code>) y de estadistica (<code>resumen_numerico</code>) viven en <code>src/viz.py</code> y ya se importaron en la celda de configuracion.</p>
+<div id="987e1167" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-10T11:19:52.458196Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-10T11:19:52.458152Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-10T11:19:52.459579Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-10T11:19:52.459404Z&quot;}}" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># `barras`, `guardar` y `resumen_numerico` se importan de src/viz.py</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="co"># (ver celda de configuracion). No se redefinen aqui.</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Helpers de graficado cargados desde src.viz"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Helpers de graficado cargados desde src.viz</code></pre>
 </div>
+</div>
+</section>
 <section id="calidad-de-los-datos-faltantes-y-duplicados" class="level3">
 <h3 class="anchored" data-anchor-id="calidad-de-los-datos-faltantes-y-duplicados">3.1 Calidad de los datos: faltantes y duplicados</h3>
-<div id="befeca37" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-10T08:49:11.252139Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-10T08:49:11.252094Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-10T08:49:11.357259Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-10T08:49:11.357057Z&quot;}}" data-execution_count="12">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>na <span class="op">=</span> df.isna().<span class="bu">sum</span>()</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>na <span class="op">=</span> na[na <span class="op">&gt;</span> <span class="dv">0</span>].sort_values(ascending<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>tabla_na <span class="op">=</span> pd.DataFrame({<span class="st">"faltantes"</span>: na, <span class="st">"porcentaje"</span>: (na <span class="op">/</span> <span class="bu">len</span>(df) <span class="op">*</span> <span class="dv">100</span>).<span class="bu">round</span>(<span class="dv">3</span>)})</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Faltantes por columna (solo columnas con algun nulo):"</span>)</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(tabla_na.to_string())</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Filas exactamente duplicadas:"</span>, <span class="bu">int</span>(df.duplicated().<span class="bu">sum</span>()))</span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Folios duplicados            :"</span>, <span class="bu">int</span>(df[<span class="st">"folio"</span>].duplicated().<span class="bu">sum</span>()))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="befeca37" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-10T11:19:52.460433Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-10T11:19:52.460390Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-10T11:19:52.573267Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-10T11:19:52.573059Z&quot;}}" data-execution_count="12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>na <span class="op">=</span> df.isna().<span class="bu">sum</span>()</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>na <span class="op">=</span> na[na <span class="op">&gt;</span> <span class="dv">0</span>].sort_values(ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>tabla_na <span class="op">=</span> pd.DataFrame({<span class="st">"faltantes"</span>: na, <span class="st">"porcentaje"</span>: (na <span class="op">/</span> <span class="bu">len</span>(df) <span class="op">*</span> <span class="dv">100</span>).<span class="bu">round</span>(<span class="dv">3</span>)})</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Faltantes por columna (solo columnas con algun nulo):"</span>)</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(tabla_na.to_string())</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Filas exactamente duplicadas:"</span>, <span class="bu">int</span>(df.duplicated().<span class="bu">sum</span>()))</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Folios duplicados            :"</span>, <span class="bu">int</span>(df[<span class="st">"folio"</span>].duplicated().<span class="bu">sum</span>()))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Faltantes por columna (solo columnas con algun nulo):
                    faltantes  porcentaje
@@ -956,27 +931,13 @@ Folios duplicados            : 0</code></pre>
 <section id="estadistica-descriptiva-hora-y-tiempo_cierre_min" class="level3">
 <h3 class="anchored" data-anchor-id="estadistica-descriptiva-hora-y-tiempo_cierre_min">3.2 Estadistica descriptiva: <code>HORA</code> y <code>TIEMPO_CIERRE_MIN</code></h3>
 <p>Para las dos numericas mas interesantes reportamos media, mediana, desviacion, cuartiles, rango y forma (asimetria y curtosis con <code>scipy</code>).</p>
-<div id="91c75fce" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-10T08:49:11.358526Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-10T08:49:11.358462Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-10T08:49:11.384909Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-10T08:49:11.384707Z&quot;}}" data-execution_count="13">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> resumen_numerico(serie):</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    s <span class="op">=</span> serie.dropna().astype(<span class="st">"float64"</span>)</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pd.Series({</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"n"</span>: <span class="bu">len</span>(s),</span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"media"</span>: s.mean(),</span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"mediana"</span>: s.median(),</span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"std"</span>: s.std(),</span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">"min"</span>: s.<span class="bu">min</span>(),</span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Q1"</span>: s.quantile(<span class="fl">.25</span>),</span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Q3"</span>: s.quantile(<span class="fl">.75</span>),</span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>        <span class="st">"max"</span>: s.<span class="bu">max</span>(),</span>
-<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>        <span class="st">"asimetria"</span>: stats.skew(s),</span>
-<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>        <span class="st">"curtosis"</span>: stats.kurtosis(s),  <span class="co"># exceso de curtosis (normal = 0)</span></span>
-<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>    })</span>
-<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>resumen <span class="op">=</span> pd.DataFrame({</span>
-<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">"HORA"</span>: resumen_numerico(df[<span class="st">"HORA"</span>]),</span>
-<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">"TIEMPO_CIERRE_MIN"</span>: resumen_numerico(df[<span class="st">"TIEMPO_CIERRE_MIN"</span>]),</span>
-<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>}).<span class="bu">round</span>(<span class="dv">3</span>)</span>
-<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>resumen</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="91c75fce" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-10T11:19:52.574279Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-10T11:19:52.574226Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-10T11:19:52.598653Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-10T11:19:52.598465Z&quot;}}" data-execution_count="13">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># resumen_numerico viene de src/viz.py; aqui solo lo aplicamos.</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>resumen <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"HORA"</span>: resumen_numerico(df[<span class="st">"HORA"</span>]),</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"TIEMPO_CIERRE_MIN"</span>: resumen_numerico(df[<span class="st">"TIEMPO_CIERRE_MIN"</span>]),</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>}).<span class="bu">round</span>(<span class="dv">3</span>)</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>resumen</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="13">
 <div>
 
@@ -1051,28 +1012,28 @@ Folios duplicados            : 0</code></pre>
 </section>
 <section id="valores-atipicos-en-tiempo_cierre_min-boxplot-regla-iqr" class="level3">
 <h3 class="anchored" data-anchor-id="valores-atipicos-en-tiempo_cierre_min-boxplot-regla-iqr">3.3 Valores atipicos en <code>TIEMPO_CIERRE_MIN</code> (boxplot + regla IQR)</h3>
-<div id="b7c88b99" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-10T08:49:11.386036Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-10T08:49:11.385977Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-10T08:49:11.585129Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-10T08:49:11.584914Z&quot;}}" data-execution_count="14">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> df[<span class="st">"TIEMPO_CIERRE_MIN"</span>].dropna().astype(<span class="st">"float64"</span>)</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>Q1, Q3 <span class="op">=</span> t.quantile(<span class="fl">.25</span>), t.quantile(<span class="fl">.75</span>)</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>IQR <span class="op">=</span> Q3 <span class="op">-</span> Q1</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>lim_sup <span class="op">=</span> Q3 <span class="op">+</span> <span class="fl">1.5</span> <span class="op">*</span> IQR</span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>n_out <span class="op">=</span> <span class="bu">int</span>((t <span class="op">&gt;</span> lim_sup).<span class="bu">sum</span>())</span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Q1=</span><span class="sc">{</span>Q1<span class="sc">:.1f}</span><span class="ss">  Q3=</span><span class="sc">{</span>Q3<span class="sc">:.1f}</span><span class="ss">  IQR=</span><span class="sc">{</span>IQR<span class="sc">:.1f}</span><span class="ss">  limite superior=</span><span class="sc">{</span>lim_sup<span class="sc">:.1f}</span><span class="ss"> min"</span>)</span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Outliers (&gt; limite): </span><span class="sc">{</span>n_out<span class="sc">:,}</span><span class="ss">  (</span><span class="sc">{</span>n_out<span class="op">/</span><span class="bu">len</span>(t)<span class="op">*</span><span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%)"</span>)</span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">4</span>))</span>
-<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].boxplot(t, vert<span class="op">=</span><span class="va">True</span>, showfliers<span class="op">=</span><span class="va">True</span>, patch_artist<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>                boxprops<span class="op">=</span><span class="bu">dict</span>(facecolor<span class="op">=</span><span class="st">"lightcoral"</span>))</span>
-<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_title(<span class="st">"TIEMPO_CIERRE_MIN - boxplot (con outliers)"</span>)</span>
-<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_ylabel(<span class="st">"minutos"</span>)</span>
-<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Zoom recortando la cola para ver la caja.</span></span>
-<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].boxplot(t.clip(upper<span class="op">=</span>lim_sup <span class="op">*</span> <span class="fl">1.2</span>), vert<span class="op">=</span><span class="va">True</span>, patch_artist<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>                boxprops<span class="op">=</span><span class="bu">dict</span>(facecolor<span class="op">=</span><span class="st">"lightcoral"</span>))</span>
-<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_title(<span class="st">"Zoom hasta ~1.2x el limite IQR"</span>)</span>
-<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_ylabel(<span class="st">"minutos"</span>)</span>
-<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
-<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>guardar(fig, <span class="st">"01_outliers_tiempo_cierre.png"</span>)</span>
-<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="b7c88b99" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-10T11:19:52.599715Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-10T11:19:52.599664Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-10T11:19:52.795925Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-10T11:19:52.795718Z&quot;}}" data-execution_count="14">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> df[<span class="st">"TIEMPO_CIERRE_MIN"</span>].dropna().astype(<span class="st">"float64"</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>Q1, Q3 <span class="op">=</span> t.quantile(<span class="fl">.25</span>), t.quantile(<span class="fl">.75</span>)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>IQR <span class="op">=</span> Q3 <span class="op">-</span> Q1</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>lim_sup <span class="op">=</span> Q3 <span class="op">+</span> <span class="fl">1.5</span> <span class="op">*</span> IQR</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>n_out <span class="op">=</span> <span class="bu">int</span>((t <span class="op">&gt;</span> lim_sup).<span class="bu">sum</span>())</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Q1=</span><span class="sc">{</span>Q1<span class="sc">:.1f}</span><span class="ss">  Q3=</span><span class="sc">{</span>Q3<span class="sc">:.1f}</span><span class="ss">  IQR=</span><span class="sc">{</span>IQR<span class="sc">:.1f}</span><span class="ss">  limite superior=</span><span class="sc">{</span>lim_sup<span class="sc">:.1f}</span><span class="ss"> min"</span>)</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Outliers (&gt; limite): </span><span class="sc">{</span>n_out<span class="sc">:,}</span><span class="ss">  (</span><span class="sc">{</span>n_out<span class="op">/</span><span class="bu">len</span>(t)<span class="op">*</span><span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%)"</span>)</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">4</span>))</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].boxplot(t, vert<span class="op">=</span><span class="va">True</span>, showfliers<span class="op">=</span><span class="va">True</span>, patch_artist<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>                boxprops<span class="op">=</span><span class="bu">dict</span>(facecolor<span class="op">=</span><span class="st">"lightcoral"</span>))</span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_title(<span class="st">"TIEMPO_CIERRE_MIN - boxplot (con outliers)"</span>)</span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_ylabel(<span class="st">"minutos"</span>)</span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Zoom recortando la cola para ver la caja.</span></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].boxplot(t.clip(upper<span class="op">=</span>lim_sup <span class="op">*</span> <span class="fl">1.2</span>), vert<span class="op">=</span><span class="va">True</span>, patch_artist<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>                boxprops<span class="op">=</span><span class="bu">dict</span>(facecolor<span class="op">=</span><span class="st">"lightcoral"</span>))</span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_title(<span class="st">"Zoom hasta ~1.2x el limite IQR"</span>)</span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_ylabel(<span class="st">"minutos"</span>)</span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a>guardar(fig, <span class="st">"01_outliers_tiempo_cierre.png"</span>)</span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Q1=184.7  Q3=225.8  IQR=41.1  limite superior=287.5 min
 Outliers (&gt; limite): 49,211  (16.98%)
@@ -1090,30 +1051,30 @@ Figura guardada: /Users/rou/Desktop/8voSemestre/Almacenes/finalProyectoAyM/figur
 </section>
 <section id="distribuciones-hora-franja-y-dia_semana" class="level3">
 <h3 class="anchored" data-anchor-id="distribuciones-hora-franja-y-dia_semana">3.4 Distribuciones: <code>HORA</code>, <code>FRANJA</code> y <code>dia_semana</code></h3>
-<div id="72d61201" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-10T08:49:11.586210Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-10T08:49:11.586157Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-10T08:49:11.827286Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-10T08:49:11.827073Z&quot;}}" data-execution_count="15">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">4</span>))</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Histograma de HORA con media y mediana.</span></span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].hist(df[<span class="st">"HORA"</span>].astype(<span class="st">"float64"</span>), bins<span class="op">=</span><span class="dv">24</span>, color<span class="op">=</span><span class="st">"steelblue"</span>,</span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>             edgecolor<span class="op">=</span><span class="st">"black"</span>, linewidth<span class="op">=</span><span class="fl">.4</span>)</span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].axvline(df[<span class="st">"HORA"</span>].mean(), color<span class="op">=</span><span class="st">"red"</span>, ls<span class="op">=</span><span class="st">"--"</span>, label<span class="op">=</span><span class="ss">f"media </span><span class="sc">{</span>df[<span class="st">'HORA'</span>]<span class="sc">.</span>mean()<span class="sc">:.1f}</span><span class="ss">"</span>)</span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].axvline(df[<span class="st">"HORA"</span>].median(), color<span class="op">=</span><span class="st">"green"</span>, ls<span class="op">=</span><span class="st">"--"</span>, label<span class="op">=</span><span class="ss">f"mediana </span><span class="sc">{</span>df[<span class="st">'HORA'</span>]<span class="sc">.</span>median()<span class="sc">:.0f}</span><span class="ss">"</span>)</span>
-<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_title(<span class="st">"Distribucion de HORA"</span>)<span class="op">;</span> axes[<span class="dv">0</span>].set_xlabel(<span class="st">"hora del dia"</span>)</span>
-<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_ylabel(<span class="st">"conteo"</span>)<span class="op">;</span> axes[<span class="dv">0</span>].legend()</span>
-<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Barras de FRANJA (orden natural del dia).</span></span>
-<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>orden_franja <span class="op">=</span> [<span class="st">"Madrugada"</span>, <span class="st">"Mañana"</span>, <span class="st">"Tarde"</span>, <span class="st">"Noche"</span>]</span>
-<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>fr <span class="op">=</span> df[<span class="st">"FRANJA"</span>].value_counts().reindex(orden_franja)</span>
-<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>barras(fr, <span class="st">"Reportes por FRANJA horaria"</span>, <span class="st">"franja"</span>, ax<span class="op">=</span>axes[<span class="dv">1</span>], color<span class="op">=</span><span class="st">"darkorange"</span>)</span>
-<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Barras de dia_semana (orden natural).</span></span>
-<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>orden_dia <span class="op">=</span> [<span class="st">"Lunes"</span>, <span class="st">"Martes"</span>, <span class="st">"Miércoles"</span>, <span class="st">"Jueves"</span>, <span class="st">"Viernes"</span>, <span class="st">"Sábado"</span>, <span class="st">"Domingo"</span>]</span>
-<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>ds <span class="op">=</span> df[<span class="st">"dia_semana"</span>].value_counts().reindex(orden_dia)</span>
-<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>barras(ds, <span class="st">"Reportes por dia de la semana"</span>, <span class="st">"dia"</span>, ax<span class="op">=</span>axes[<span class="dv">2</span>], color<span class="op">=</span><span class="st">"seagreen"</span>, rot<span class="op">=</span><span class="dv">45</span>)</span>
-<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
-<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a>guardar(fig, <span class="st">"01_distribuciones.png"</span>)</span>
-<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="72d61201" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-10T11:19:52.797062Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-10T11:19:52.797008Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-10T11:19:53.033002Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-10T11:19:53.032765Z&quot;}}" data-execution_count="15">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">4</span>))</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Histograma de HORA con media y mediana.</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].hist(df[<span class="st">"HORA"</span>].astype(<span class="st">"float64"</span>), bins<span class="op">=</span><span class="dv">24</span>, color<span class="op">=</span><span class="st">"steelblue"</span>,</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>             edgecolor<span class="op">=</span><span class="st">"black"</span>, linewidth<span class="op">=</span><span class="fl">.4</span>)</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].axvline(df[<span class="st">"HORA"</span>].mean(), color<span class="op">=</span><span class="st">"red"</span>, ls<span class="op">=</span><span class="st">"--"</span>, label<span class="op">=</span><span class="ss">f"media </span><span class="sc">{</span>df[<span class="st">'HORA'</span>]<span class="sc">.</span>mean()<span class="sc">:.1f}</span><span class="ss">"</span>)</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].axvline(df[<span class="st">"HORA"</span>].median(), color<span class="op">=</span><span class="st">"green"</span>, ls<span class="op">=</span><span class="st">"--"</span>, label<span class="op">=</span><span class="ss">f"mediana </span><span class="sc">{</span>df[<span class="st">'HORA'</span>]<span class="sc">.</span>median()<span class="sc">:.0f}</span><span class="ss">"</span>)</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_title(<span class="st">"Distribucion de HORA"</span>)<span class="op">;</span> axes[<span class="dv">0</span>].set_xlabel(<span class="st">"hora del dia"</span>)</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_ylabel(<span class="st">"conteo"</span>)<span class="op">;</span> axes[<span class="dv">0</span>].legend()</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Barras de FRANJA (orden natural del dia).</span></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>orden_franja <span class="op">=</span> [<span class="st">"Madrugada"</span>, <span class="st">"Mañana"</span>, <span class="st">"Tarde"</span>, <span class="st">"Noche"</span>]</span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>fr <span class="op">=</span> df[<span class="st">"FRANJA"</span>].value_counts().reindex(orden_franja)</span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>barras(fr, <span class="st">"Reportes por FRANJA horaria"</span>, <span class="st">"franja"</span>, ax<span class="op">=</span>axes[<span class="dv">1</span>], color<span class="op">=</span><span class="st">"darkorange"</span>)</span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Barras de dia_semana (orden natural).</span></span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>orden_dia <span class="op">=</span> [<span class="st">"Lunes"</span>, <span class="st">"Martes"</span>, <span class="st">"Miércoles"</span>, <span class="st">"Jueves"</span>, <span class="st">"Viernes"</span>, <span class="st">"Sábado"</span>, <span class="st">"Domingo"</span>]</span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>ds <span class="op">=</span> df[<span class="st">"dia_semana"</span>].value_counts().reindex(orden_dia)</span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>barras(ds, <span class="st">"Reportes por dia de la semana"</span>, <span class="st">"dia"</span>, ax<span class="op">=</span>axes[<span class="dv">2</span>], color<span class="op">=</span><span class="st">"seagreen"</span>, rot<span class="op">=</span><span class="dv">45</span>)</span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a>guardar(fig, <span class="st">"01_distribuciones.png"</span>)</span>
+<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Figura guardada: /Users/rou/Desktop/8voSemestre/Almacenes/finalProyectoAyM/figures/01_distribuciones.png</code></pre>
 </div>
@@ -1129,24 +1090,24 @@ Figura guardada: /Users/rou/Desktop/8voSemestre/Almacenes/finalProyectoAyM/figur
 </section>
 <section id="balance-del-target-real-decision-de-diseno" class="level3">
 <h3 class="anchored" data-anchor-id="balance-del-target-real-decision-de-diseno">3.5 Balance del target <code>REAL</code> (decision de diseno)</h3>
-<div id="b09ed406" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-10T08:49:11.828385Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-10T08:49:11.828333Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-10T08:49:11.889396Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-10T08:49:11.889187Z&quot;}}" data-execution_count="16">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>vc <span class="op">=</span> df[<span class="st">"REAL"</span>].value_counts().sort_index()</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>prop <span class="op">=</span> df[<span class="st">"REAL"</span>].value_counts(normalize<span class="op">=</span><span class="va">True</span>).sort_index()</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="fl">4.2</span>))</span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>colores <span class="op">=</span> [<span class="st">"indianred"</span>, <span class="st">"seagreen"</span>]</span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>bars <span class="op">=</span> ax.bar([<span class="st">"0 - falso/informativo"</span>, <span class="st">"1 - afirmativo (real)"</span>], vc.values,</span>
-<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>              color<span class="op">=</span>colores, edgecolor<span class="op">=</span><span class="st">"black"</span>)</span>
-<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> b, p <span class="kw">in</span> <span class="bu">zip</span>(bars, prop.values):</span>
-<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>    ax.text(b.get_x() <span class="op">+</span> b.get_width()<span class="op">/</span><span class="dv">2</span>, b.get_height(),</span>
-<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>            <span class="ss">f"</span><span class="sc">{</span>p<span class="op">*</span><span class="dv">100</span><span class="sc">:.1f}</span><span class="ss">%"</span>, ha<span class="op">=</span><span class="st">"center"</span>, va<span class="op">=</span><span class="st">"bottom"</span>, fontweight<span class="op">=</span><span class="st">"bold"</span>)</span>
-<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Balance del target REAL (n = 289,885)"</span>)</span>
-<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">"conteo"</span>)</span>
-<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
-<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>guardar(fig, <span class="st">"01_balance_target.png"</span>)</span>
-<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
-<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Razon de desbalance (real : no real):"</span>, <span class="bu">round</span>(prop[<span class="dv">1</span>] <span class="op">/</span> prop[<span class="dv">0</span>], <span class="dv">2</span>), <span class="st">": 1"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="b09ed406" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-10T11:19:53.034092Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-10T11:19:53.034039Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-10T11:19:53.097553Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-10T11:19:53.097351Z&quot;}}" data-execution_count="16">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>vc <span class="op">=</span> df[<span class="st">"REAL"</span>].value_counts().sort_index()</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>prop <span class="op">=</span> df[<span class="st">"REAL"</span>].value_counts(normalize<span class="op">=</span><span class="va">True</span>).sort_index()</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="fl">4.2</span>))</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>colores <span class="op">=</span> [<span class="st">"indianred"</span>, <span class="st">"seagreen"</span>]</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>bars <span class="op">=</span> ax.bar([<span class="st">"0 - falso/informativo"</span>, <span class="st">"1 - afirmativo (real)"</span>], vc.values,</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>              color<span class="op">=</span>colores, edgecolor<span class="op">=</span><span class="st">"black"</span>)</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> b, p <span class="kw">in</span> <span class="bu">zip</span>(bars, prop.values):</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>    ax.text(b.get_x() <span class="op">+</span> b.get_width()<span class="op">/</span><span class="dv">2</span>, b.get_height(),</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>            <span class="ss">f"</span><span class="sc">{</span>p<span class="op">*</span><span class="dv">100</span><span class="sc">:.1f}</span><span class="ss">%"</span>, ha<span class="op">=</span><span class="st">"center"</span>, va<span class="op">=</span><span class="st">"bottom"</span>, fontweight<span class="op">=</span><span class="st">"bold"</span>)</span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Balance del target REAL (n = 289,885)"</span>)</span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">"conteo"</span>)</span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>guardar(fig, <span class="st">"01_balance_target.png"</span>)</span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Razon de desbalance (real : no real):"</span>, <span class="bu">round</span>(prop[<span class="dv">1</span>] <span class="op">/</span> prop[<span class="dv">0</span>], <span class="dv">2</span>), <span class="st">": 1"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Figura guardada: /Users/rou/Desktop/8voSemestre/Almacenes/finalProyectoAyM/figures/01_balance_target.png</code></pre>
 </div>
@@ -1167,6 +1128,60 @@ Figura guardada: /Users/rou/Desktop/8voSemestre/Almacenes/finalProyectoAyM/figur
 </blockquote>
 <p><strong>Nota:</strong> este balance limpio (63.5/36.5) es preferible al ~79/21 que daria contar los duplicados como reales, como argumentamos en la seccion 2.</p>
 </section>
+<section id="correlaciones-entre-numericas-y-dispersion-espacial" class="level3">
+<h3 class="anchored" data-anchor-id="correlaciones-entre-numericas-y-dispersion-espacial">3.6 Correlaciones entre numericas y dispersion espacial</h3>
+<p>La rubrica pide una <strong>matriz de correlaciones</strong> y <strong>scatter plots</strong> de pares relevantes. Como el problema tiene pocas numericas, calculamos la correlacion de <strong>Spearman</strong> (monotona, robusta a no-linealidad) entre ellas y con el target, y visualizamos un par espacial relevante (longitud vs latitud) coloreado por <code>REAL</code>.</p>
+<div id="432c4de0" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-10T11:19:53.098611Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-10T11:19:53.098553Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-10T11:19:53.517390Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-10T11:19:53.517175Z&quot;}}" data-execution_count="17">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Matriz de correlacion de Spearman: numericas + el target.</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>num_corr <span class="op">=</span> [<span class="st">"HORA"</span>, <span class="st">"MES"</span>, <span class="st">"ANIO"</span>, <span class="st">"latitud"</span>, <span class="st">"longitud"</span>, <span class="st">"TIEMPO_CIERRE_MIN"</span>, <span class="st">"REAL"</span>]</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>corr <span class="op">=</span> df[num_corr].astype(<span class="st">"float64"</span>).corr(method<span class="op">=</span><span class="st">"spearman"</span>)</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="fl">5.6</span>))</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>sns.heatmap(corr, annot<span class="op">=</span><span class="va">True</span>, fmt<span class="op">=</span><span class="st">".2f"</span>, cmap<span class="op">=</span><span class="st">"RdBu_r"</span>, center<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>            vmin<span class="op">=-</span><span class="dv">1</span>, vmax<span class="op">=</span><span class="dv">1</span>, square<span class="op">=</span><span class="va">True</span>, linewidths<span class="op">=</span><span class="fl">.5</span>, ax<span class="op">=</span>ax,</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>            cbar_kws<span class="op">=</span>{<span class="st">"shrink"</span>: <span class="fl">.8</span>})</span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Correlacion de Spearman (numericas + target REAL)"</span>)</span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>guardar(fig, <span class="st">"01_correlacion.png"</span>)</span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Figura guardada: /Users/rou/Desktop/8voSemestre/Almacenes/finalProyectoAyM/figures/01_correlacion.png</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="01_eda_files/figure-html/cell-18-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Interpretacion.</strong> Las variables numericas estan <strong>practicamente descorrelacionadas entre si</strong> (|r| &lt; 0.1, salvo un leve MES-ANIO de -0.21 por el corte temporal) y, sobre todo, su correlacion con el target <code>REAL</code> es <strong>muy baja</strong>: la mayor entre las <em>features del modelo</em> es <code>latitud</code> (0.08), seguida de <code>HORA</code> (-0.07). El unico valor apreciable, <code>TIEMPO_CIERRE_MIN</code> (0.26), proviene de una variable de <strong>fuga</strong> (excluida del modelo). La lectura clave es que las numericas aportan <strong>poca senal monotona</strong> sobre la veracidad; el poder predictivo vendra de las <strong>categoricas</strong> (canal, tipo de incidente), justo lo que confirmara la importancia por permutacion del notebook 02.</p>
+<div id="1f711efe" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-10T11:19:53.518421Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-10T11:19:53.518366Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-10T11:19:53.708124Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-10T11:19:53.707924Z&quot;}}" data-execution_count="18">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Scatter de un par espacial relevante: longitud vs latitud por veracidad.</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> df.sample(n<span class="op">=</span><span class="dv">8000</span>, random_state<span class="op">=</span>SEMILLA)</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="fl">6.2</span>, <span class="fl">5.6</span>))</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>sc <span class="op">=</span> ax.scatter(m[<span class="st">"longitud"</span>].astype(<span class="st">"float64"</span>), m[<span class="st">"latitud"</span>].astype(<span class="st">"float64"</span>),</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>                c<span class="op">=</span>m[<span class="st">"REAL"</span>], cmap<span class="op">=</span><span class="st">"coolwarm"</span>, s<span class="op">=</span><span class="dv">7</span>, alpha<span class="op">=</span><span class="fl">.5</span>)</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"longitud"</span>)<span class="op">;</span> ax.set_ylabel(<span class="st">"latitud"</span>)</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>ax.set_aspect(<span class="st">"equal"</span>, adjustable<span class="op">=</span><span class="st">"datalim"</span>)</span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Ubicacion de incidentes coloreada por REAL (muestra 8,000)"</span>)</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>fig.colorbar(sc, ax<span class="op">=</span>ax, label<span class="op">=</span><span class="st">"REAL (0 = falso/inform., 1 = real)"</span>, shrink<span class="op">=</span><span class="fl">.8</span>)</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>guardar(fig, <span class="st">"01_scatter_geo.png"</span>)</span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Figura guardada: /Users/rou/Desktop/8voSemestre/Almacenes/finalProyectoAyM/figures/01_scatter_geo.png</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="01_eda_files/figure-html/cell-19-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Interpretacion.</strong> En el scatter espacial los reportes reales y los falsos/informativos <strong>se entremezclan por toda la ciudad</strong>: no hay una frontera geografica nitida que los separe, coherente con la baja correlacion de <code>latitud</code>/<code>longitud</code> con el target. Existe estructura espacial (mas densidad en el centro-oriente), pero es <strong>sutil</strong> y no separable de forma lineal simple; sera el <strong>clustering espacial del notebook 03</strong> (DBSCAN) el que la explote para hallar corredores de incidentes.</p>
+</section>
 </section>
 <section id="geografia-del-reporte-quien-reporta-donde-y-que-tan-confiable-es" class="level2">
 <h2 class="anchored" data-anchor-id="geografia-del-reporte-quien-reporta-donde-y-que-tan-confiable-es">4. Geografia del reporte: ¿quien reporta, donde y que tan confiable es?</h2>
@@ -1174,28 +1189,28 @@ Figura guardada: /Users/rou/Desktop/8voSemestre/Almacenes/finalProyectoAyM/figur
 <section id="confiabilidad-por-canal-de-entrada-tipo_entrada" class="level3">
 <h3 class="anchored" data-anchor-id="confiabilidad-por-canal-de-entrada-tipo_entrada">4.1 Confiabilidad por canal de entrada (<code>tipo_entrada</code>)</h3>
 <p>Para cada canal calculamos su <strong>volumen</strong> y su <strong>tasa de confirmacion</strong> (% de reportes con <code>REAL = 1</code>).</p>
-<div id="549889ca" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-10T08:49:11.890434Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-10T08:49:11.890385Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-10T08:49:11.977874Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-10T08:49:11.977687Z&quot;}}" data-execution_count="17">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> (df.groupby(<span class="st">"tipo_entrada"</span>, observed<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>        .agg(n<span class="op">=</span>(<span class="st">"REAL"</span>, <span class="st">"size"</span>), pct_real<span class="op">=</span>(<span class="st">"REAL"</span>, <span class="st">"mean"</span>)))</span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>g[<span class="st">"pct_real"</span>] <span class="op">=</span> (g[<span class="st">"pct_real"</span>] <span class="op">*</span> <span class="dv">100</span>).<span class="bu">round</span>(<span class="dv">1</span>)</span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>g[<span class="st">"pct_volumen"</span>] <span class="op">=</span> (g[<span class="st">"n"</span>] <span class="op">/</span> <span class="bu">len</span>(df) <span class="op">*</span> <span class="dv">100</span>).<span class="bu">round</span>(<span class="dv">2</span>)</span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> g.sort_values(<span class="st">"n"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(g[[<span class="st">"n"</span>, <span class="st">"pct_volumen"</span>, <span class="st">"pct_real"</span>]].to_string())</span>
-<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Solo canales con volumen suficiente para una tasa estable (n &gt;= 100).</span></span>
-<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>g_plot <span class="op">=</span> g[g[<span class="st">"n"</span>] <span class="op">&gt;=</span> <span class="dv">100</span>].sort_values(<span class="st">"pct_real"</span>)</span>
-<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="fl">8.5</span>, <span class="fl">4.5</span>))</span>
-<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>bars <span class="op">=</span> ax.barh(g_plot.index, g_plot[<span class="st">"pct_real"</span>], color<span class="op">=</span><span class="st">"teal"</span>, edgecolor<span class="op">=</span><span class="st">"black"</span>)</span>
-<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>ax.axvline(df[<span class="st">"REAL"</span>].mean() <span class="op">*</span> <span class="dv">100</span>, color<span class="op">=</span><span class="st">"red"</span>, ls<span class="op">=</span><span class="st">"--"</span>,</span>
-<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>           label<span class="op">=</span><span class="ss">f"media global </span><span class="sc">{</span>df[<span class="st">'REAL'</span>]<span class="sc">.</span>mean()<span class="op">*</span><span class="dv">100</span><span class="sc">:.1f}</span><span class="ss">%"</span>)</span>
-<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> b, v <span class="kw">in</span> <span class="bu">zip</span>(bars, g_plot[<span class="st">"pct_real"</span>]):</span>
-<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>    ax.text(b.get_width() <span class="op">+</span> <span class="fl">.5</span>, b.get_y() <span class="op">+</span> b.get_height()<span class="op">/</span><span class="dv">2</span>, <span class="ss">f"</span><span class="sc">{</span>v<span class="sc">:.0f}</span><span class="ss">%"</span>,</span>
-<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a>            va<span class="op">=</span><span class="st">"center"</span>, fontsize<span class="op">=</span><span class="dv">9</span>)</span>
-<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"</span><span class="sc">% d</span><span class="st">e reportes reales por canal de entrada"</span>)</span>
-<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"</span><span class="sc">% r</span><span class="st">eal (REAL = 1)"</span>)<span class="op">;</span> ax.legend()</span>
-<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
-<span id="cb29-20"><a href="#cb29-20" aria-hidden="true" tabindex="-1"></a>guardar(fig, <span class="st">"01_fuente_confirmacion.png"</span>)</span>
-<span id="cb29-21"><a href="#cb29-21" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="549889ca" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-10T11:19:53.709221Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-10T11:19:53.709157Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-10T11:19:53.801842Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-10T11:19:53.801642Z&quot;}}" data-execution_count="19">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> (df.groupby(<span class="st">"tipo_entrada"</span>, observed<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>        .agg(n<span class="op">=</span>(<span class="st">"REAL"</span>, <span class="st">"size"</span>), pct_real<span class="op">=</span>(<span class="st">"REAL"</span>, <span class="st">"mean"</span>)))</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>g[<span class="st">"pct_real"</span>] <span class="op">=</span> (g[<span class="st">"pct_real"</span>] <span class="op">*</span> <span class="dv">100</span>).<span class="bu">round</span>(<span class="dv">1</span>)</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>g[<span class="st">"pct_volumen"</span>] <span class="op">=</span> (g[<span class="st">"n"</span>] <span class="op">/</span> <span class="bu">len</span>(df) <span class="op">*</span> <span class="dv">100</span>).<span class="bu">round</span>(<span class="dv">2</span>)</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> g.sort_values(<span class="st">"n"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(g[[<span class="st">"n"</span>, <span class="st">"pct_volumen"</span>, <span class="st">"pct_real"</span>]].to_string())</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Solo canales con volumen suficiente para una tasa estable (n &gt;= 100).</span></span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>g_plot <span class="op">=</span> g[g[<span class="st">"n"</span>] <span class="op">&gt;=</span> <span class="dv">100</span>].sort_values(<span class="st">"pct_real"</span>)</span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="fl">8.5</span>, <span class="fl">4.5</span>))</span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>bars <span class="op">=</span> ax.barh(g_plot.index, g_plot[<span class="st">"pct_real"</span>], color<span class="op">=</span><span class="st">"teal"</span>, edgecolor<span class="op">=</span><span class="st">"black"</span>)</span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>ax.axvline(df[<span class="st">"REAL"</span>].mean() <span class="op">*</span> <span class="dv">100</span>, color<span class="op">=</span><span class="st">"red"</span>, ls<span class="op">=</span><span class="st">"--"</span>,</span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>           label<span class="op">=</span><span class="ss">f"media global </span><span class="sc">{</span>df[<span class="st">'REAL'</span>]<span class="sc">.</span>mean()<span class="op">*</span><span class="dv">100</span><span class="sc">:.1f}</span><span class="ss">%"</span>)</span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> b, v <span class="kw">in</span> <span class="bu">zip</span>(bars, g_plot[<span class="st">"pct_real"</span>]):</span>
+<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a>    ax.text(b.get_width() <span class="op">+</span> <span class="fl">.5</span>, b.get_y() <span class="op">+</span> b.get_height()<span class="op">/</span><span class="dv">2</span>, <span class="ss">f"</span><span class="sc">{</span>v<span class="sc">:.0f}</span><span class="ss">%"</span>,</span>
+<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a>            va<span class="op">=</span><span class="st">"center"</span>, fontsize<span class="op">=</span><span class="dv">9</span>)</span>
+<span id="cb35-17"><a href="#cb35-17" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"</span><span class="sc">% d</span><span class="st">e reportes reales por canal de entrada"</span>)</span>
+<span id="cb35-18"><a href="#cb35-18" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"</span><span class="sc">% r</span><span class="st">eal (REAL = 1)"</span>)<span class="op">;</span> ax.legend()</span>
+<span id="cb35-19"><a href="#cb35-19" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
+<span id="cb35-20"><a href="#cb35-20" aria-hidden="true" tabindex="-1"></a>guardar(fig, <span class="st">"01_fuente_confirmacion.png"</span>)</span>
+<span id="cb35-21"><a href="#cb35-21" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                       n  pct_volumen  pct_real
 tipo_entrada                                   
@@ -1213,7 +1228,7 @@ Figura guardada: /Users/rou/Desktop/8voSemestre/Almacenes/finalProyectoAyM/figur
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="01_eda_files/figure-html/cell-18-output-2.png" class="img-fluid figure-img"></p>
+<p><img src="01_eda_files/figure-html/cell-20-output-2.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -1222,29 +1237,29 @@ Figura guardada: /Users/rou/Desktop/8voSemestre/Almacenes/finalProyectoAyM/figur
 </section>
 <section id="confiabilidad-por-alcaldia" class="level3">
 <h3 class="anchored" data-anchor-id="confiabilidad-por-alcaldia">4.2 Confiabilidad por alcaldia</h3>
-<div id="6979c61a" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-10T08:49:11.978914Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-10T08:49:11.978864Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-10T08:49:12.101587Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-10T08:49:12.101378Z&quot;}}" data-execution_count="18">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> (df.groupby(<span class="st">"alcaldia_catalogo"</span>, observed<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>        .agg(n<span class="op">=</span>(<span class="st">"REAL"</span>, <span class="st">"size"</span>), pct_real<span class="op">=</span>(<span class="st">"REAL"</span>, <span class="st">"mean"</span>)))</span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>a[<span class="st">"pct_real"</span>] <span class="op">=</span> (a[<span class="st">"pct_real"</span>] <span class="op">*</span> <span class="dv">100</span>).<span class="bu">round</span>(<span class="dv">1</span>)</span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> a.sort_values(<span class="st">"pct_real"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="fl">8.5</span>, <span class="dv">5</span>))</span>
-<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>ax.barh(a.index[::<span class="op">-</span><span class="dv">1</span>], a[<span class="st">"pct_real"</span>][::<span class="op">-</span><span class="dv">1</span>], color<span class="op">=</span><span class="st">"slateblue"</span>, edgecolor<span class="op">=</span><span class="st">"black"</span>)</span>
-<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>ax.axvline(df[<span class="st">"REAL"</span>].mean() <span class="op">*</span> <span class="dv">100</span>, color<span class="op">=</span><span class="st">"red"</span>, ls<span class="op">=</span><span class="st">"--"</span>,</span>
-<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>           label<span class="op">=</span><span class="ss">f"media global </span><span class="sc">{</span>df[<span class="st">'REAL'</span>]<span class="sc">.</span>mean()<span class="op">*</span><span class="dv">100</span><span class="sc">:.1f}</span><span class="ss">%"</span>)</span>
-<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"</span><span class="sc">% d</span><span class="st">e reportes reales por alcaldia"</span>)</span>
-<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"</span><span class="sc">% r</span><span class="st">eal (REAL = 1)"</span>)<span class="op">;</span> ax.legend()</span>
-<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
-<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>guardar(fig, <span class="st">"01_alcaldia_confirmacion.png"</span>)</span>
-<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
-<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a[[<span class="st">"n"</span>, <span class="st">"pct_real"</span>]].to_string())</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="6979c61a" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-10T11:19:53.802870Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-10T11:19:53.802809Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-10T11:19:53.925539Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-10T11:19:53.925254Z&quot;}}" data-execution_count="20">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> (df.groupby(<span class="st">"alcaldia_catalogo"</span>, observed<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>        .agg(n<span class="op">=</span>(<span class="st">"REAL"</span>, <span class="st">"size"</span>), pct_real<span class="op">=</span>(<span class="st">"REAL"</span>, <span class="st">"mean"</span>)))</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>a[<span class="st">"pct_real"</span>] <span class="op">=</span> (a[<span class="st">"pct_real"</span>] <span class="op">*</span> <span class="dv">100</span>).<span class="bu">round</span>(<span class="dv">1</span>)</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> a.sort_values(<span class="st">"pct_real"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="fl">8.5</span>, <span class="dv">5</span>))</span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>ax.barh(a.index[::<span class="op">-</span><span class="dv">1</span>], a[<span class="st">"pct_real"</span>][::<span class="op">-</span><span class="dv">1</span>], color<span class="op">=</span><span class="st">"slateblue"</span>, edgecolor<span class="op">=</span><span class="st">"black"</span>)</span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>ax.axvline(df[<span class="st">"REAL"</span>].mean() <span class="op">*</span> <span class="dv">100</span>, color<span class="op">=</span><span class="st">"red"</span>, ls<span class="op">=</span><span class="st">"--"</span>,</span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>           label<span class="op">=</span><span class="ss">f"media global </span><span class="sc">{</span>df[<span class="st">'REAL'</span>]<span class="sc">.</span>mean()<span class="op">*</span><span class="dv">100</span><span class="sc">:.1f}</span><span class="ss">%"</span>)</span>
+<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"</span><span class="sc">% d</span><span class="st">e reportes reales por alcaldia"</span>)</span>
+<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"</span><span class="sc">% r</span><span class="st">eal (REAL = 1)"</span>)<span class="op">;</span> ax.legend()</span>
+<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
+<span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a>guardar(fig, <span class="st">"01_alcaldia_confirmacion.png"</span>)</span>
+<span id="cb37-14"><a href="#cb37-14" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb37-15"><a href="#cb37-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a[[<span class="st">"n"</span>, <span class="st">"pct_real"</span>]].to_string())</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Figura guardada: /Users/rou/Desktop/8voSemestre/Almacenes/finalProyectoAyM/figures/01_alcaldia_confirmacion.png</code></pre>
 </div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="01_eda_files/figure-html/cell-19-output-2.png" class="img-fluid figure-img"></p>
+<p><img src="01_eda_files/figure-html/cell-21-output-2.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -1274,29 +1289,29 @@ Cuajimalpa de Morelos    5893      50.7</code></pre>
 <section id="mezcla-canal-x-alcaldia-heatmap-y-prueba-de-independencia" class="level3">
 <h3 class="anchored" data-anchor-id="mezcla-canal-x-alcaldia-heatmap-y-prueba-de-independencia">4.3 Mezcla canal x alcaldia: heatmap y prueba de independencia</h3>
 <p>¿La mezcla de canales cambia entre alcaldias? Construimos la tabla de contingencia, la mostramos como heatmap (en % por alcaldia, <strong>excluyendo la LLAMADA DEL 911</strong> que aplastaria la escala con ~88%) y medimos la asociacion con <strong>chi-cuadrado</strong> y la <strong>V de Cramer</strong>.</p>
-<div id="d5749a33" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-10T08:49:12.102621Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-10T08:49:12.102561Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-10T08:49:12.299454Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-10T08:49:12.299247Z&quot;}}" data-execution_count="19">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Tabla de contingencia completa (conteos) para el test.</span></span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>ct <span class="op">=</span> pd.crosstab(df[<span class="st">"alcaldia_catalogo"</span>], df[<span class="st">"tipo_entrada"</span>])</span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>chi2, p, dof, _ <span class="op">=</span> stats.chi2_contingency(ct)</span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> ct.values.<span class="bu">sum</span>()</span>
-<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>cramer <span class="op">=</span> np.sqrt((chi2 <span class="op">/</span> n) <span class="op">/</span> (<span class="bu">min</span>(ct.shape) <span class="op">-</span> <span class="dv">1</span>))</span>
-<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"chi2 = </span><span class="sc">{</span>chi2<span class="sc">:,.1f}</span><span class="ss">   p-value = </span><span class="sc">{</span>p<span class="sc">:.3g}</span><span class="ss">   dof = </span><span class="sc">{</span>dof<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"V de Cramer = </span><span class="sc">{</span>cramer<span class="sc">:.4f}</span><span class="ss">  (efecto pequeno &lt; 0.10)"</span>)</span>
-<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Heatmap: % de cada canal dentro de la alcaldia, SIN la LLAMADA DEL 911.</span></span>
-<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>mezcla <span class="op">=</span> ct.div(ct.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>), axis<span class="op">=</span><span class="dv">0</span>) <span class="op">*</span> <span class="dv">100</span>  <span class="co"># % sobre el total de la alcaldia</span></span>
-<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>mezcla <span class="op">=</span> mezcla.loc[ct.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>).sort_values(ascending<span class="op">=</span><span class="va">False</span>).index]</span>
-<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Solo canales (sin 911) con presencia apreciable para un heatmap legible.</span></span>
-<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>canales_vis <span class="op">=</span> [c <span class="cf">for</span> c <span class="kw">in</span> mezcla.columns <span class="cf">if</span> c <span class="op">!=</span> <span class="st">"LLAMADA DEL 911"</span>]</span>
-<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>canales_vis <span class="op">=</span> mezcla[canales_vis].<span class="bu">sum</span>().sort_values(ascending<span class="op">=</span><span class="va">False</span>).head(<span class="dv">5</span>).index</span>
-<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="fl">8.5</span>, <span class="dv">6</span>))</span>
-<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a>sns.heatmap(mezcla[canales_vis], annot<span class="op">=</span><span class="va">True</span>, fmt<span class="op">=</span><span class="st">".1f"</span>, cmap<span class="op">=</span><span class="st">"YlOrRd"</span>,</span>
-<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a>            cbar_kws<span class="op">=</span>{<span class="st">"label"</span>: <span class="st">"</span><span class="sc">% d</span><span class="st">e reportes de la alcaldia"</span>}, ax<span class="op">=</span>ax)</span>
-<span id="cb34-18"><a href="#cb34-18" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Mezcla de canales por alcaldia (</span><span class="sc">% s</span><span class="st">in LLAMADA DEL 911)"</span>)</span>
-<span id="cb34-19"><a href="#cb34-19" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"canal"</span>)<span class="op">;</span> ax.set_ylabel(<span class="st">"alcaldia"</span>)</span>
-<span id="cb34-20"><a href="#cb34-20" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
-<span id="cb34-21"><a href="#cb34-21" aria-hidden="true" tabindex="-1"></a>guardar(fig, <span class="st">"01_mezcla_canal_alcaldia.png"</span>)</span>
-<span id="cb34-22"><a href="#cb34-22" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="d5749a33" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-10T11:19:53.926828Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-10T11:19:53.926756Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-10T11:19:54.118861Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-10T11:19:54.118663Z&quot;}}" data-execution_count="21">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Tabla de contingencia completa (conteos) para el test.</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>ct <span class="op">=</span> pd.crosstab(df[<span class="st">"alcaldia_catalogo"</span>], df[<span class="st">"tipo_entrada"</span>])</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>chi2, p, dof, _ <span class="op">=</span> stats.chi2_contingency(ct)</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> ct.values.<span class="bu">sum</span>()</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>cramer <span class="op">=</span> np.sqrt((chi2 <span class="op">/</span> n) <span class="op">/</span> (<span class="bu">min</span>(ct.shape) <span class="op">-</span> <span class="dv">1</span>))</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"chi2 = </span><span class="sc">{</span>chi2<span class="sc">:,.1f}</span><span class="ss">   p-value = </span><span class="sc">{</span>p<span class="sc">:.3g}</span><span class="ss">   dof = </span><span class="sc">{</span>dof<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"V de Cramer = </span><span class="sc">{</span>cramer<span class="sc">:.4f}</span><span class="ss">  (efecto pequeno &lt; 0.10)"</span>)</span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Heatmap: % de cada canal dentro de la alcaldia, SIN la LLAMADA DEL 911.</span></span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>mezcla <span class="op">=</span> ct.div(ct.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>), axis<span class="op">=</span><span class="dv">0</span>) <span class="op">*</span> <span class="dv">100</span>  <span class="co"># % sobre el total de la alcaldia</span></span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a>mezcla <span class="op">=</span> mezcla.loc[ct.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>).sort_values(ascending<span class="op">=</span><span class="va">False</span>).index]</span>
+<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Solo canales (sin 911) con presencia apreciable para un heatmap legible.</span></span>
+<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a>canales_vis <span class="op">=</span> [c <span class="cf">for</span> c <span class="kw">in</span> mezcla.columns <span class="cf">if</span> c <span class="op">!=</span> <span class="st">"LLAMADA DEL 911"</span>]</span>
+<span id="cb40-14"><a href="#cb40-14" aria-hidden="true" tabindex="-1"></a>canales_vis <span class="op">=</span> mezcla[canales_vis].<span class="bu">sum</span>().sort_values(ascending<span class="op">=</span><span class="va">False</span>).head(<span class="dv">5</span>).index</span>
+<span id="cb40-15"><a href="#cb40-15" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="fl">8.5</span>, <span class="dv">6</span>))</span>
+<span id="cb40-16"><a href="#cb40-16" aria-hidden="true" tabindex="-1"></a>sns.heatmap(mezcla[canales_vis], annot<span class="op">=</span><span class="va">True</span>, fmt<span class="op">=</span><span class="st">".1f"</span>, cmap<span class="op">=</span><span class="st">"YlOrRd"</span>,</span>
+<span id="cb40-17"><a href="#cb40-17" aria-hidden="true" tabindex="-1"></a>            cbar_kws<span class="op">=</span>{<span class="st">"label"</span>: <span class="st">"</span><span class="sc">% d</span><span class="st">e reportes de la alcaldia"</span>}, ax<span class="op">=</span>ax)</span>
+<span id="cb40-18"><a href="#cb40-18" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Mezcla de canales por alcaldia (</span><span class="sc">% s</span><span class="st">in LLAMADA DEL 911)"</span>)</span>
+<span id="cb40-19"><a href="#cb40-19" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"canal"</span>)<span class="op">;</span> ax.set_ylabel(<span class="st">"alcaldia"</span>)</span>
+<span id="cb40-20"><a href="#cb40-20" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
+<span id="cb40-21"><a href="#cb40-21" aria-hidden="true" tabindex="-1"></a>guardar(fig, <span class="st">"01_mezcla_canal_alcaldia.png"</span>)</span>
+<span id="cb40-22"><a href="#cb40-22" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>chi2 = 3,719.8   p-value = 0   dof = 120
 V de Cramer = 0.0401  (efecto pequeno &lt; 0.10)
@@ -1305,7 +1320,7 @@ Figura guardada: /Users/rou/Desktop/8voSemestre/Almacenes/finalProyectoAyM/figur
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="01_eda_files/figure-html/cell-20-output-2.png" class="img-fluid figure-img"></p>
+<p><img src="01_eda_files/figure-html/cell-22-output-2.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -1315,28 +1330,28 @@ Figura guardada: /Users/rou/Desktop/8voSemestre/Almacenes/finalProyectoAyM/figur
 <section id="canal-x-franja-horaria" class="level3">
 <h3 class="anchored" data-anchor-id="canal-x-franja-horaria">4.4 Canal x franja horaria</h3>
 <p>¿En que momento del dia reporta cada canal? Normalizamos <strong>por fila</strong> (perfil horario de cada canal) para que el volumen del 911 no aplaste la lectura.</p>
-<div id="0cb152e8" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-10T08:49:12.300598Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-10T08:49:12.300537Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-10T08:49:12.412314Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-10T08:49:12.412079Z&quot;}}" data-execution_count="20">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>orden_franja <span class="op">=</span> [<span class="st">"Madrugada"</span>, <span class="st">"Mañana"</span>, <span class="st">"Tarde"</span>, <span class="st">"Noche"</span>]</span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>mf <span class="op">=</span> pd.crosstab(df[<span class="st">"tipo_entrada"</span>], df[<span class="st">"FRANJA"</span>]).reindex(columns<span class="op">=</span>orden_franja)</span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Solo canales con volumen suficiente.</span></span>
-<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>mf <span class="op">=</span> mf[mf.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>) <span class="op">&gt;=</span> <span class="dv">100</span>]</span>
-<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>perfil <span class="op">=</span> mf.div(mf.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>), axis<span class="op">=</span><span class="dv">0</span>) <span class="op">*</span> <span class="dv">100</span>  <span class="co"># % por canal</span></span>
-<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="fl">8.5</span>, <span class="fl">4.5</span>))</span>
-<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>sns.heatmap(perfil, annot<span class="op">=</span><span class="va">True</span>, fmt<span class="op">=</span><span class="st">".0f"</span>, cmap<span class="op">=</span><span class="st">"Blues"</span>,</span>
-<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>            cbar_kws<span class="op">=</span>{<span class="st">"label"</span>: <span class="st">"</span><span class="sc">% d</span><span class="st">e los reportes del canal"</span>}, ax<span class="op">=</span>ax)</span>
-<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Perfil horario por canal (% por fila)"</span>)</span>
-<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"franja"</span>)<span class="op">;</span> ax.set_ylabel(<span class="st">"canal"</span>)</span>
-<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
-<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a>guardar(fig, <span class="st">"01_canal_franja.png"</span>)</span>
-<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="0cb152e8" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-10T11:19:54.119962Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-10T11:19:54.119910Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-10T11:19:54.233632Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-10T11:19:54.233442Z&quot;}}" data-execution_count="22">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>orden_franja <span class="op">=</span> [<span class="st">"Madrugada"</span>, <span class="st">"Mañana"</span>, <span class="st">"Tarde"</span>, <span class="st">"Noche"</span>]</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>mf <span class="op">=</span> pd.crosstab(df[<span class="st">"tipo_entrada"</span>], df[<span class="st">"FRANJA"</span>]).reindex(columns<span class="op">=</span>orden_franja)</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Solo canales con volumen suficiente.</span></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>mf <span class="op">=</span> mf[mf.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>) <span class="op">&gt;=</span> <span class="dv">100</span>]</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>perfil <span class="op">=</span> mf.div(mf.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>), axis<span class="op">=</span><span class="dv">0</span>) <span class="op">*</span> <span class="dv">100</span>  <span class="co"># % por canal</span></span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="fl">8.5</span>, <span class="fl">4.5</span>))</span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a>sns.heatmap(perfil, annot<span class="op">=</span><span class="va">True</span>, fmt<span class="op">=</span><span class="st">".0f"</span>, cmap<span class="op">=</span><span class="st">"Blues"</span>,</span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a>            cbar_kws<span class="op">=</span>{<span class="st">"label"</span>: <span class="st">"</span><span class="sc">% d</span><span class="st">e los reportes del canal"</span>}, ax<span class="op">=</span>ax)</span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Perfil horario por canal (% por fila)"</span>)</span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"franja"</span>)<span class="op">;</span> ax.set_ylabel(<span class="st">"canal"</span>)</span>
+<span id="cb42-12"><a href="#cb42-12" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
+<span id="cb42-13"><a href="#cb42-13" aria-hidden="true" tabindex="-1"></a>guardar(fig, <span class="st">"01_canal_franja.png"</span>)</span>
+<span id="cb42-14"><a href="#cb42-14" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Figura guardada: /Users/rou/Desktop/8voSemestre/Almacenes/finalProyectoAyM/figures/01_canal_franja.png</code></pre>
 </div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="01_eda_files/figure-html/cell-21-output-2.png" class="img-fluid figure-img"></p>
+<p><img src="01_eda_files/figure-html/cell-23-output-2.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -1346,29 +1361,29 @@ Figura guardada: /Users/rou/Desktop/8voSemestre/Almacenes/finalProyectoAyM/figur
 <section id="confiabilidad-por-franja-horaria" class="level3">
 <h3 class="anchored" data-anchor-id="confiabilidad-por-franja-horaria">4.5 Confiabilidad por franja horaria</h3>
 <p>Cerramos la geografía del reporte mirando la dimensión <strong>temporal de la confiabilidad</strong>: ¿la proporción de reportes reales cambia según la franja horaria (Madrugada / Mañana / Tarde / Noche)? A diferencia de la sección 4.4 —que describía <em>qué canal</em> domina en cada franja—, aquí medimos directamente la <strong>tasa de veracidad</strong> (<code>% REAL</code>) por franja.</p>
-<div id="946aab53" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-10T08:49:12.413427Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-10T08:49:12.413368Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-10T08:49:12.497614Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-10T08:49:12.497409Z&quot;}}" data-execution_count="21">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Confiabilidad (% de reportes reales) por franja horaria.</span></span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>orden_franja <span class="op">=</span> [<span class="st">"Madrugada"</span>, <span class="st">"Mañana"</span>, <span class="st">"Tarde"</span>, <span class="st">"Noche"</span>]</span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> (df.groupby(<span class="st">"FRANJA"</span>, observed<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>        .agg(n<span class="op">=</span>(<span class="st">"REAL"</span>, <span class="st">"size"</span>), pct_real<span class="op">=</span>(<span class="st">"REAL"</span>, <span class="st">"mean"</span>)))</span>
-<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>f[<span class="st">"pct_real"</span>] <span class="op">=</span> (f[<span class="st">"pct_real"</span>] <span class="op">*</span> <span class="dv">100</span>).<span class="bu">round</span>(<span class="dv">1</span>)</span>
-<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>f[<span class="st">"pct_volumen"</span>] <span class="op">=</span> (f[<span class="st">"n"</span>] <span class="op">/</span> <span class="bu">len</span>(df) <span class="op">*</span> <span class="dv">100</span>).<span class="bu">round</span>(<span class="dv">1</span>)</span>
-<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> f.reindex(orden_franja)</span>
-<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(f[[<span class="st">"n"</span>, <span class="st">"pct_volumen"</span>, <span class="st">"pct_real"</span>]].to_string())</span>
-<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="fl">7.5</span>, <span class="dv">4</span>))</span>
-<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>bars <span class="op">=</span> ax.bar(f.index, f[<span class="st">"pct_real"</span>], color<span class="op">=</span><span class="st">"darkorange"</span>, edgecolor<span class="op">=</span><span class="st">"black"</span>)</span>
-<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a>ax.axhline(df[<span class="st">"REAL"</span>].mean() <span class="op">*</span> <span class="dv">100</span>, color<span class="op">=</span><span class="st">"red"</span>, ls<span class="op">=</span><span class="st">"--"</span>,</span>
-<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>           label<span class="op">=</span><span class="ss">f"media global </span><span class="sc">{</span>df[<span class="st">'REAL'</span>]<span class="sc">.</span>mean()<span class="op">*</span><span class="dv">100</span><span class="sc">:.1f}</span><span class="ss">%"</span>)</span>
-<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> b, v <span class="kw">in</span> <span class="bu">zip</span>(bars, f[<span class="st">"pct_real"</span>]):</span>
-<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a>    ax.text(b.get_x() <span class="op">+</span> b.get_width()<span class="op">/</span><span class="dv">2</span>, b.get_height() <span class="op">+</span> <span class="fl">.4</span>, <span class="ss">f"</span><span class="sc">{</span>v<span class="sc">:.1f}</span><span class="ss">%"</span>,</span>
-<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a>            ha<span class="op">=</span><span class="st">"center"</span>, fontsize<span class="op">=</span><span class="dv">9</span>)</span>
-<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"</span><span class="sc">% d</span><span class="st">e reportes reales por franja horaria"</span>)</span>
-<span id="cb38-18"><a href="#cb38-18" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"franja horaria"</span>)<span class="op">;</span> ax.set_ylabel(<span class="st">"</span><span class="sc">% r</span><span class="st">eal (REAL = 1)"</span>)</span>
-<span id="cb38-19"><a href="#cb38-19" aria-hidden="true" tabindex="-1"></a>ax.set_ylim(<span class="dv">0</span>, <span class="dv">80</span>)<span class="op">;</span> ax.legend()</span>
-<span id="cb38-20"><a href="#cb38-20" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
-<span id="cb38-21"><a href="#cb38-21" aria-hidden="true" tabindex="-1"></a>guardar(fig, <span class="st">"01_franja_confirmacion.png"</span>)</span>
-<span id="cb38-22"><a href="#cb38-22" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="946aab53" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-10T11:19:54.234754Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-10T11:19:54.234693Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-10T11:19:54.320223Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-10T11:19:54.320021Z&quot;}}" data-execution_count="23">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Confiabilidad (% de reportes reales) por franja horaria.</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>orden_franja <span class="op">=</span> [<span class="st">"Madrugada"</span>, <span class="st">"Mañana"</span>, <span class="st">"Tarde"</span>, <span class="st">"Noche"</span>]</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> (df.groupby(<span class="st">"FRANJA"</span>, observed<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>        .agg(n<span class="op">=</span>(<span class="st">"REAL"</span>, <span class="st">"size"</span>), pct_real<span class="op">=</span>(<span class="st">"REAL"</span>, <span class="st">"mean"</span>)))</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>f[<span class="st">"pct_real"</span>] <span class="op">=</span> (f[<span class="st">"pct_real"</span>] <span class="op">*</span> <span class="dv">100</span>).<span class="bu">round</span>(<span class="dv">1</span>)</span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>f[<span class="st">"pct_volumen"</span>] <span class="op">=</span> (f[<span class="st">"n"</span>] <span class="op">/</span> <span class="bu">len</span>(df) <span class="op">*</span> <span class="dv">100</span>).<span class="bu">round</span>(<span class="dv">1</span>)</span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> f.reindex(orden_franja)</span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(f[[<span class="st">"n"</span>, <span class="st">"pct_volumen"</span>, <span class="st">"pct_real"</span>]].to_string())</span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="fl">7.5</span>, <span class="dv">4</span>))</span>
+<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a>bars <span class="op">=</span> ax.bar(f.index, f[<span class="st">"pct_real"</span>], color<span class="op">=</span><span class="st">"darkorange"</span>, edgecolor<span class="op">=</span><span class="st">"black"</span>)</span>
+<span id="cb44-12"><a href="#cb44-12" aria-hidden="true" tabindex="-1"></a>ax.axhline(df[<span class="st">"REAL"</span>].mean() <span class="op">*</span> <span class="dv">100</span>, color<span class="op">=</span><span class="st">"red"</span>, ls<span class="op">=</span><span class="st">"--"</span>,</span>
+<span id="cb44-13"><a href="#cb44-13" aria-hidden="true" tabindex="-1"></a>           label<span class="op">=</span><span class="ss">f"media global </span><span class="sc">{</span>df[<span class="st">'REAL'</span>]<span class="sc">.</span>mean()<span class="op">*</span><span class="dv">100</span><span class="sc">:.1f}</span><span class="ss">%"</span>)</span>
+<span id="cb44-14"><a href="#cb44-14" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> b, v <span class="kw">in</span> <span class="bu">zip</span>(bars, f[<span class="st">"pct_real"</span>]):</span>
+<span id="cb44-15"><a href="#cb44-15" aria-hidden="true" tabindex="-1"></a>    ax.text(b.get_x() <span class="op">+</span> b.get_width()<span class="op">/</span><span class="dv">2</span>, b.get_height() <span class="op">+</span> <span class="fl">.4</span>, <span class="ss">f"</span><span class="sc">{</span>v<span class="sc">:.1f}</span><span class="ss">%"</span>,</span>
+<span id="cb44-16"><a href="#cb44-16" aria-hidden="true" tabindex="-1"></a>            ha<span class="op">=</span><span class="st">"center"</span>, fontsize<span class="op">=</span><span class="dv">9</span>)</span>
+<span id="cb44-17"><a href="#cb44-17" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"</span><span class="sc">% d</span><span class="st">e reportes reales por franja horaria"</span>)</span>
+<span id="cb44-18"><a href="#cb44-18" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"franja horaria"</span>)<span class="op">;</span> ax.set_ylabel(<span class="st">"</span><span class="sc">% r</span><span class="st">eal (REAL = 1)"</span>)</span>
+<span id="cb44-19"><a href="#cb44-19" aria-hidden="true" tabindex="-1"></a>ax.set_ylim(<span class="dv">0</span>, <span class="dv">80</span>)<span class="op">;</span> ax.legend()</span>
+<span id="cb44-20"><a href="#cb44-20" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
+<span id="cb44-21"><a href="#cb44-21" aria-hidden="true" tabindex="-1"></a>guardar(fig, <span class="st">"01_franja_confirmacion.png"</span>)</span>
+<span id="cb44-22"><a href="#cb44-22" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>               n  pct_volumen  pct_real
 FRANJA                                 
@@ -1381,7 +1396,7 @@ Figura guardada: /Users/rou/Desktop/8voSemestre/Almacenes/finalProyectoAyM/figur
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="01_eda_files/figure-html/cell-22-output-2.png" class="img-fluid figure-img"></p>
+<p><img src="01_eda_files/figure-html/cell-24-output-2.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>

@@ -52,12 +52,26 @@ finalProyectoAyM/
 │   ├── alcaldias.geojson         Límites de las 16 alcaldías (para el mapa)
 │   └── corredores_geocodificados.json  Nombres de vialidades de los corredores
 │
+├── src/                          Código fuente (POO; lo importan los notebooks)
+│   ├── config.py                 Semilla, rutas y listas de variables
+│   ├── preparacion.py            PasoLimpieza + subclases + PipelinePreparacion
+│   ├── modelado.py               ModeloClasificador → ModeloRandomForest / ModeloMLP
+│   ├── clustering.py             ClusteringEspacial (proyección + DBSCAN)
+│   └── viz.py                    Funciones de graficado y descriptivas
+│
 ├── notebooks/
-│   ├── 01_eda.ipynb              Diccionario, patrón Pipeline y EDA
+│   ├── 01_eda.ipynb              Diccionario, patrón Pipeline, EDA y correlaciones
 │   ├── 02_clasificacion.ipynb    Baseline + RandomForest + MLP + recarga
 │   └── 03_clustering.ipynb       DBSCAN + mapa interactivo de corredores
 │
-├── _generadores/                 Scripts que generan los notebooks (nbformat)
+├── diagrams/
+│   ├── uml_clases.png            Diagrama UML de clases de src/
+│   ├── uml_clases.mmd            Fuente Mermaid del UML
+│   └── generar_uml.py            Script que dibuja el UML
+│
+├── _generadores/                 Scripts que generaron las versiones iniciales de
+│                                 los notebooks (referencia; la fuente actual son
+│                                 notebooks/ + src/)
 │
 ├── models/
 │   ├── modelo_rf.joblib          Modelo final (RandomForest)
@@ -78,6 +92,13 @@ finalProyectoAyM/
 - **Python 3.12**
 - Dependencias en [`requirements.txt`](requirements.txt) (scikit-learn, pandas,
   plotly, etc.). No se usan `torch`, `xgboost` ni `lightgbm`.
+
+El **código fuente** (clases y módulos) vive en [`src/`](src/), organizado por
+responsabilidad (datos / modelado / clustering / visualización). Los notebooks
+no redefinen lógica: la **importan** desde `src/`. El diseño aplica herencia
+(pasos de limpieza y clasificadores) y composición (el pipeline de preparación),
+y el patrón de diseño es **Pipeline** en dos niveles (ver
+[`diagrams/uml_clases.png`](diagrams/uml_clases.png) y el reporte).
 
 ---
 

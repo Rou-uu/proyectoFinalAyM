@@ -692,23 +692,44 @@ sobre una vialidad saturada merece \emph{más} verificación, no menos.
 % ============================================================================
 \section{Arquitectura y diseño}
 
+\textbf{Organización del código (POO).} El código fuente vive en el paquete
+\texttt{src/}, separado de los notebooks, que solo lo importan y lo usan. Está
+organizado por responsabilidad: \texttt{src/preparacion.py} (limpieza de
+datos), \texttt{src/modelado.py} (clasificadores), \texttt{src/clustering.py}
+(agrupamiento), \texttt{src/viz.py} (graficado) y \texttt{src/config.py}
+(semilla, rutas y listas de variables). El diseño usa \textbf{herencia} donde
+es natural —los pasos de limpieza son subclases de \texttt{PasoLimpieza}, y
+\texttt{ModeloRandomForest} y \texttt{ModeloMLP} heredan de
+\texttt{ModeloClasificador} (comparten el flujo \emph{prep $\rightarrow$ clf} y
+solo cambian el tratamiento numérico y el estimador)— y \textbf{composición}
+donde corresponde: \texttt{PipelinePreparacion} contiene una lista de pasos. La
+Figura~\ref{fig:uml} muestra el diagrama UML de clases.
+
+\begin{figure}[H]\centering
+\includegraphics[width=\linewidth]{../diagrams/uml_clases.png}
+\caption{Diagrama UML de clases del código fuente (\texttt{src/}): herencia
+(triángulo hueco) en los pasos de limpieza y en los clasificadores, y composición (rombo) entre
+\texttt{PipelinePreparacion} y \texttt{PasoLimpieza}.}
+\label{fig:uml}
+\end{figure}
+
 \textbf{Patrón de diseño implementado: Pipeline, en dos niveles.}
 (i) \emph{Preparación de datos}: la clase \texttt{PipelinePreparacion}
-encadena pasos atómicos de limpieza (\texttt{quitar\_duplicados}
-$\rightarrow$ \texttt{quitar\_anio\_ruido} $\rightarrow$
-\texttt{construir\_target}), cada uno una función pura
-\texttt{df}$\rightarrow$\texttt{df}, y registra una bitácora auditable
+encadena pasos atómicos de limpieza (\texttt{QuitarDuplicados} $\rightarrow$
+\texttt{QuitarAnioRuido} $\rightarrow$ \texttt{ConstruirTarget}, subclases de
+\texttt{PasoLimpieza}) y registra una bitácora auditable
 (Tabla~\ref{tab:pipe}); agregar, quitar o reordenar un paso es trivial y la
 trazabilidad queda impresa. (ii) \emph{Modelado}: el \texttt{Pipeline} de
-\texttt{scikit-learn} encadena codificación $\rightarrow$ clasificador en un
-único objeto, garantizando que el preprocesamiento ajustado en entrenamiento
-se aplique idéntico en validación, prueba y producción —lo que además previene
-fugas de preprocesamiento. Se eligió Pipeline porque el procesamiento del
-proyecto ocurre naturalmente en etapas secuenciales bien definidas (limpieza
+\texttt{scikit-learn} (construido por las clases de \texttt{src/modelado.py})
+encadena codificación $\rightarrow$ clasificador en un único objeto,
+garantizando que el preprocesamiento ajustado en entrenamiento se aplique
+idéntico en validación, prueba y producción —lo que además previene fugas de
+preprocesamiento. Se eligió Pipeline porque el procesamiento del proyecto
+ocurre naturalmente en etapas secuenciales bien definidas (limpieza
 $\rightarrow$ codificación $\rightarrow$ modelo), y el patrón maximiza la
 reproducibilidad y la legibilidad del flujo.
 
-\textbf{Diagrama.} La Figura~\ref{fig:arquitectura} muestra el flujo completo:
+\textbf{Diagrama de flujo.} La Figura~\ref{fig:arquitectura} muestra el flujo completo:
 el pipeline de preparación (nivel i) produce el dataset de trabajo que
 consumen los tres notebooks, y el pipeline de modelado (nivel ii) encapsula
 preprocesamiento y clasificador en el objeto único que se persiste y recarga.
