@@ -21,6 +21,7 @@ lang: es
 website:
   title: "Triage de reportes viales del C5"
   description: "Proyecto Final — Almacenes y Minería de Datos (UNAM). Predicción de veracidad de reportes de incidentes viales y corredores de incidentes en CDMX."
+  favicon: favicon.png
   navbar:
     background: dark
     left:
