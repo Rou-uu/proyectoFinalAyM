@@ -1,0 +1,84 @@
+---
+title: "Triage de reportes de incidentes viales del C5"
+subtitle: "¿Es real o falso un reporte vial? Predicción de veracidad y corredores de incidentes en la Ciudad de México (2022–2024)"
+---
+
+**Proyecto Final — Almacenes y Minería de Datos** · Facultad de Ciencias, UNAM
+
+| | |
+|---|---|
+| **Integrante** | José Rubén Alfaro González — No. de cuenta 320516436 |
+| **Profesora** | Jessica Santizo Galicia |
+| **Ayudantes** | Diego Antonio Villalba González (teoría) · Ares Gael Castro Romero (laboratorio) |
+| **Fecha** | Junio de 2026 |
+
+---
+
+## El problema
+
+El **Centro de Comando, Control, Cómputo, Comunicaciones y Contacto Ciudadano
+(C5)** de la Ciudad de México recibe cientos de miles de reportes de incidentes
+viales al año por distintos canales: llamadas al 911, botones de auxilio,
+cámaras y radio. Una fracción importante de esos reportes **no corresponde a un
+incidente confirmado**: son falsos o meramente informativos. Despachar unidades
+de emergencia hacia reportes que no lo ameritan desperdicia recursos escasos y
+retrasa la atención de los incidentes reales.
+
+Este proyecto responde dos preguntas complementarias:
+
+1. **Supervisado** — con la información disponible *al momento de recibir un
+   reporte* (canal, tipo de incidente, hora, alcaldía, ubicación), ¿podemos
+   estimar la probabilidad de que sea **real** (cierre afirmativo) frente a
+   falso/informativo, para apoyar la priorización del despacho?
+2. **No supervisado** — ¿en qué **vialidades** se concentran los incidentes y de
+   qué tipo son? (corredores de incidentes descubiertos con DBSCAN).
+
+## El dataset
+
+- **Fuente:** [Incidentes viales reportados por el C5](https://datos.cdmx.gob.mx),
+  Portal de Datos Abiertos de la CDMX (licencia CC-BY-4.0), corte 2022–2024.
+- **Tamaño:** 504,261 reportes crudos → **289,885** tras la preparación
+  (eliminación de duplicados con el patrón **Pipeline**; bitácora auditable en el
+  [notebook de EDA](notebooks/01_eda.ipynb)).
+- **Variable objetivo:** `REAL` = 1 si el cierre fue afirmativo (63.5 %),
+  0 si falso/informativo (36.5 %). Los cierres *duplicados* —que son eventos
+  reales ya reportados— se excluyen porque su manejo corresponde al sistema de
+  despacho, no al modelo de veracidad.
+- **Variables:** mezcla de numéricas (hora, mes, año, latitud, longitud) y
+  categóricas (tipo de incidente, canal de entrada, alcaldía, día, franja). El
+  diccionario completo está en el notebook de EDA y en
+  `reports/diccionario_datos.md`.
+- **Frontera anti-fuga:** las columnas que solo se conocen *al cerrar* el reporte
+  (`TIEMPO_CIERRE_MIN`, `clas_con_f_alarma`) se usan únicamente para análisis,
+  nunca como variables del modelo.
+
+## Resultados principales
+
+| Modelo | Accuracy | F1 macro | AUC |
+|---|---|---|---|
+| Línea base (mayoritario) | 0.635 | 0.388 | 0.500 |
+| **RandomForest (final)** | 0.670 | **0.658** | **0.729** |
+| Red neuronal (MLP) | 0.686 | 0.638 | 0.726 |
+
+- El **tipo de incidente y el canal del reporte concentran la señal del
+  modelo** (importancias por permutación 0.102 y 0.031); en el análisis
+  bivariado, radio y cámara confirman ~93 % mientras la llamada al 911 —el
+  87.6 % del volumen— confirma solo ~60 %.
+- La confiabilidad **decae a lo largo del día**: madrugada 70 % real vs. noche
+  60 %, justo cuando el volumen es máximo.
+- **DBSCAN** identifica 168 nodos densos de incidentes (silueta 0.753) con
+  nombre de vialidad (Circuito Interior, Distribuidor Vial San Antonio,
+  Calz. Ignacio Zaragoza, …) y un [mapa interactivo](mapa.qmd) sobre la
+  ciudad; las vialidades más saturadas confirman *por debajo* del promedio.
+- El modelo final se **persiste con joblib y se recarga** para predecir reportes
+  nuevos sin reentrenar (demostración al final del
+  [notebook de clasificación](notebooks/02_clasificacion.ipynb)).
+
+## Contenido del sitio
+
+| Página | Qué contiene |
+|---|---|
+| [01 · EDA](notebooks/01_eda.ipynb) | Diccionario de datos, preparación con patrón Pipeline, calidad, distribuciones, outliers y la *geografía del reporte* |
+| [02 · Clasificación](notebooks/02_clasificacion.ipynb) | Línea base, RandomForest con tuning, métricas completas, importancias, análisis de errores, experimento de fuga, MLP comparativa y recarga del modelo |
+| [03 · Clustering](notebooks/03_clustering.ipynb) | DBSCAN espacial, corredores con nombre de vialidad, mapa interactivo y validación externa |
+| [Instalación](instalacion.qmd) | Cómo reproducir el proyecto paso a paso |

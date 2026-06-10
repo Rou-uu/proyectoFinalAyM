@@ -1,0 +1,50 @@
+project:
+  type: website
+  output-dir: docs
+  render:
+    - index.qmd
+    - mapa.qmd
+    - instalacion.qmd
+    - notebooks/01_eda.ipynb
+    - notebooks/02_clasificacion.ipynb
+    - notebooks/03_clustering.ipynb
+  resources:
+    - figures/mapa_corredores.html
+
+# Los notebooks ya están ejecutados con sus salidas guardadas:
+# el sitio se construye SIN re-ejecutar código.
+execute:
+  enabled: false
+
+lang: es
+
+website:
+  title: "Triage de reportes viales del C5"
+  description: "Proyecto Final — Almacenes y Minería de Datos (UNAM). Predicción de veracidad de reportes de incidentes viales y corredores de incidentes en CDMX."
+  navbar:
+    background: dark
+    left:
+      - href: index.qmd
+        text: Inicio
+      - href: notebooks/01_eda.ipynb
+        text: "01 · EDA"
+      - href: notebooks/02_clasificacion.ipynb
+        text: "02 · Clasificación"
+      - href: notebooks/03_clustering.ipynb
+        text: "03 · Clustering"
+      - href: mapa.qmd
+        text: "🗺️ Mapa interactivo"
+      - href: instalacion.qmd
+        text: Instalación
+  page-footer:
+    center: "Proyecto Final — Almacenes y Minería de Datos · Facultad de Ciencias, UNAM · 2026"
+
+format:
+  html:
+    theme: flatly
+    toc: true
+    toc-depth: 3
+    toc-title: "En esta página"
+    code-fold: false
+    fig-align: center
+    smooth-scroll: true

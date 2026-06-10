@@ -1,0 +1,95 @@
+---
+title: "Instalación y ejecución"
+---
+
+## Requisitos
+
+- **Python 3.12**
+- Dependencias con versiones exactas en `requirements.txt` (scikit-learn,
+  pandas, plotly, …). No se usan `torch`, `xgboost` ni `lightgbm`.
+
+## 1. Clonar e instalar
+
+```bash
+git clone <URL-del-repositorio>
+cd finalProyectoAyM
+
+python3 -m venv .venv
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
+python3 -m pip install -r requirements.txt
+```
+
+## 2. Datos
+
+Los datasets procesados (`data/*.parquet`) **ya vienen incluidos** en el
+repositorio, así que los notebooks corren sin descargar nada.
+
+Solo si quieres regenerar todo desde el crudo: descarga el dataset
+«Incidentes viales reportados por el C5» del
+[Portal de Datos Abiertos de la CDMX](https://datos.cdmx.gob.mx) y colócalo en
+`data/raw/c5_inViales_2022_2024.csv`.
+
+::: {.callout-note}
+El servidor de archivos de la CDMX puede presentar un certificado SSL vencido;
+en ese caso usa `curl -k` para la descarga. La fuente es oficial y citable a
+través del registro del portal (licencia CC-BY-4.0).
+:::
+
+## 3. Ejecutar los notebooks
+
+```bash
+python3 -m jupyter nbconvert --to notebook --execute --inplace \
+    notebooks/01_eda.ipynb --ExecutePreprocessor.timeout=3600
+python3 -m jupyter nbconvert --to notebook --execute --inplace \
+    notebooks/02_clasificacion.ipynb --ExecutePreprocessor.timeout=3600
+python3 -m jupyter nbconvert --to notebook --execute --inplace \
+    notebooks/03_clustering.ipynb --ExecutePreprocessor.timeout=3600
+```
+
+El **mapa interactivo** de corredores queda embebido en `03_clustering.ipynb` y
+también como archivo independiente `figures/mapa_corredores.html` (se abre en
+el navegador con zoom y desplazamiento libres).
+
+## 4. Reutilizar el modelo sin reentrenar
+
+La última sección de `02_clasificacion.ipynb` recarga el modelo persistido y
+predice reportes nuevos:
+
+```python
+import joblib, pandas as pd
+
+modelo = joblib.load("models/modelo_rf.joblib")
+
+reporte = pd.DataFrame([{
+    "HORA": 5.0, "MES": 3.0, "ANIO": 2024.0,
+    "latitud": 19.43, "longitud": -99.14,
+    "tipo_incidente_c4": "Accidente",
+    "incidente_c4": "Choque con lesionados",
+    "tipo_entrada": "CÁMARA",
+    "alcaldia_catalogo": "Cuauhtémoc",
+    "dia_semana": "Viernes", "FRANJA": "Madrugada",
+}])
+
+print("P(real) =", modelo.predict_proba(reporte)[0, 1])
+```
+
+## 5. Compilar el reporte (LaTeX)
+
+```bash
+cd reports && pdflatex reporte.tex && pdflatex reporte.tex
+```
+
+## 6. Reconstruir este sitio (Quarto)
+
+```bash
+quarto render        # genera docs/ (GitHub Pages sirve desde ahí)
+```
+
+## Reproducibilidad
+
+- **Semilla única `42`** en particiones, modelos y muestreos.
+- Partición estratificada **80/20**; los ajustes se eligen en validación, nunca
+  en el conjunto de prueba.
+- Preparación de datos con el **patrón Pipeline** (clase `PipelinePreparacion`)
+  y bitácora auditable: 504,261 → 289,885 filas.
+- Versiones exactas de dependencias en `requirements.txt`.

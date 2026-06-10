@@ -1,0 +1,28 @@
+---
+title: "Mapa interactivo de corredores"
+format:
+  html:
+    page-layout: full
+    toc: false
+---
+
+Corredores y cruceros de incidentes viales descubiertos con **DBSCAN**
+(eps = 150 m, min_samples = 200) sobre los 289,885 reportes depurados.
+Cada color es un cluster; el gris es ruido (incidentes dispersos). Pasa el
+cursor sobre un punto para ver la **vialidad, el tipo de incidente dominante,
+el % de reportes reales y la alcaldía**. Usa la rueda del ratón o el gesto de
+pellizco para hacer zoom.
+
+```{=html}
+<iframe src="figures/mapa_corredores.html"
+        style="width:100%; height:78vh; border:1px solid #ddd; border-radius:6px;"
+        loading="lazy"
+        title="Mapa interactivo de corredores de incidentes (DBSCAN)">
+</iframe>
+```
+
+::: {.callout-tip}
+Si el mapa no carga en tu visor, ábrelo directamente:
+[`figures/mapa_corredores.html`](figures/mapa_corredores.html). El detalle del
+análisis está en el [notebook de clustering](notebooks/03_clustering.ipynb).
+:::

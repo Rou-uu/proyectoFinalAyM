@@ -1,0 +1,30 @@
+# Dependencias del proyecto — versiones EXACTAS verificadas en el entorno
+# (Python 3.12). Reproducibilidad con semilla 42.
+#
+# Instalación:  python3 -m pip install -r requirements.txt
+#
+# Nota: el clasificador final es RandomForest y la red neuronal es MLPClassifier,
+# ambos de scikit-learn. NO se usa torch/xgboost/lightgbm.
+
+# --- Núcleo numérico y de datos ---
+pandas==3.0.2
+numpy==2.4.5
+pyarrow==23.0.1
+
+# --- Aprendizaje automático ---
+scikit-learn==1.8.0
+scipy==1.17.1
+joblib==1.5.3
+
+# --- Visualización (incluye mapa interactivo con Plotly) ---
+matplotlib==3.10.9
+seaborn==0.13.2
+plotly==6.6.0
+
+# --- Ejecución de notebooks ---
+nbformat==5.10.4
+nbclient==0.10.4
+nbconvert==7.17.0
+ipykernel==6.31.0
+jupyter-core==5.9.1
+notebook==7.5.5

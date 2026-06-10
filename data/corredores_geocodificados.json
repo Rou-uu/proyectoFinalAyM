@@ -1,0 +1,152 @@
+[
+  {
+    "cluster": 31,
+    "lat": 19.46582,
+    "lon": -99.139994,
+    "alcaldia": "Gustavo A. Madero",
+    "road": "Calle Mendelssohn",
+    "suburb": "Colonia Vallejo Poniente",
+    "vialidad": "Calle Mendelssohn · Colonia Vallejo Poniente",
+    "display_name": "Calle Mendelssohn, Colonia Vallejo Poniente, Ciudad de México, Gustavo A. Madero, Ciudad de México, 07790, México"
+  },
+  {
+    "cluster": 16,
+    "lat": 19.409727,
+    "lon": -99.081555,
+    "alcaldia": "Venustiano Carranza",
+    "road": "Calle 73",
+    "suburb": "Puebla",
+    "vialidad": "Calle 73 · Puebla",
+    "display_name": "Calle 73, Puebla, Ciudad de México, Venustiano Carranza, Ciudad de México, 15020, México"
+  },
+  {
+    "cluster": 9,
+    "lat": 19.400823,
+    "lon": -99.062778,
+    "alcaldia": "Iztacalco",
+    "road": "Calzada General Ignacio Zaragoza",
+    "suburb": "Colonia Guelatao Benito Juárez",
+    "vialidad": "Calzada General Ignacio Zaragoza · Colonia Guelatao Benito Juárez",
+    "display_name": "Calzada General Ignacio Zaragoza, Colonia Guelatao Benito Juárez, Ciudad de México, Iztacalco, Ciudad de México, 09229, México"
+  },
+  {
+    "cluster": 74,
+    "lat": 19.424811,
+    "lon": -99.130723,
+    "alcaldia": "Cuauhtémoc",
+    "road": "Calle Escuela Médico Militar",
+    "suburb": "Centro",
+    "vialidad": "Calle Escuela Médico Militar · Centro",
+    "display_name": "Calle Escuela Médico Militar, Centro, Ciudad de México, Cuauhtémoc, Ciudad de México, 06080, México"
+  },
+  {
+    "cluster": 42,
+    "lat": 19.421756,
+    "lon": -99.163923,
+    "alcaldia": "Cuauhtémoc",
+    "road": "Calle Sinaloa",
+    "suburb": "Roma",
+    "vialidad": "Calle Sinaloa · Roma",
+    "display_name": "Calle Sinaloa, Roma Norte, Roma, Ciudad de México, Cuauhtémoc, Ciudad de México, 06700, México"
+  },
+  {
+    "cluster": 88,
+    "lat": 19.407314,
+    "lon": -99.142796,
+    "alcaldia": "Cuauhtémoc",
+    "road": "José Peón Contreras",
+    "suburb": "Narvarte",
+    "vialidad": "José Peón Contreras · Narvarte",
+    "display_name": "José Peón Contreras, Obrera, Narvarte, Ciudad de México, Cuauhtémoc, Ciudad de México, 06800, México"
+  },
+  {
+    "cluster": 33,
+    "lat": 19.316941,
+    "lon": -99.074644,
+    "alcaldia": "Iztapalapa",
+    "road": null,
+    "suburb": "Unidad Habitacional Mirasoles",
+    "vialidad": "Iztapalapa (centroide 19.3169, -99.0746)",
+    "display_name": "Unidad Habitacional Mirasoles, San Lorenzo Tezonco, Ciudad de México, Iztapalapa, Ciudad de México, 09910, México"
+  },
+  {
+    "cluster": 49,
+    "lat": 19.418365,
+    "lon": -99.096706,
+    "alcaldia": "Venustiano Carranza",
+    "road": "Avenida 4",
+    "suburb": "Valentín Gómez Farías",
+    "vialidad": "Avenida 4 · Valentín Gómez Farías",
+    "display_name": "Avenida 4, Valentín Gómez Farías, Ciudad de México, Venustiano Carranza, Ciudad de México, 15010, México"
+  },
+  {
+    "cluster": 108,
+    "lat": 19.434213,
+    "lon": -99.171061,
+    "alcaldia": "Miguel Hidalgo",
+    "road": "Circuito Interior Melchor Ocampo",
+    "suburb": "Verónica Anzures",
+    "vialidad": "Circuito Interior Melchor Ocampo · Verónica Anzures",
+    "display_name": "Circuito Interior Melchor Ocampo, Verónica Anzures, Ciudad de México, Miguel Hidalgo, Ciudad de México, 11300, México"
+  },
+  {
+    "cluster": 34,
+    "lat": 19.38517,
+    "lon": -99.187504,
+    "alcaldia": "Benito Juárez",
+    "road": "Distribuidor Vial San Antonio",
+    "suburb": "Mixcoac",
+    "vialidad": "Distribuidor Vial San Antonio · Mixcoac",
+    "display_name": "Distribuidor Vial San Antonio, Mixcoac, Ciudad de México, Benito Juárez, Ciudad de México, 03800, México"
+  },
+  {
+    "cluster": 80,
+    "lat": 19.402302,
+    "lon": -99.170414,
+    "alcaldia": "Cuauhtémoc",
+    "road": "Calle Bajío",
+    "suburb": "Condesa",
+    "vialidad": "Calle Bajío · Condesa",
+    "display_name": "Calle Bajío, Hipódromo, Condesa, Ciudad de México, Cuauhtémoc, Ciudad de México, 06100, México"
+  },
+  {
+    "cluster": 46,
+    "lat": 19.357506,
+    "lon": -99.142699,
+    "alcaldia": "Benito Juárez",
+    "road": "Avenida Río Churubusco",
+    "suburb": "Colonia Ermita",
+    "vialidad": "Avenida Río Churubusco · Colonia Ermita",
+    "display_name": "Avenida Río Churubusco, Colonia Ermita, Ciudad de México, Benito Juárez, Ciudad de México, 03590, México"
+  },
+  {
+    "cluster": 29,
+    "lat": 19.305855,
+    "lon": -99.063146,
+    "alcaldia": "Iztapalapa",
+    "road": "Avenida Tláhuac",
+    "suburb": "San Lorenzo Tezonco",
+    "vialidad": "Avenida Tláhuac · San Lorenzo Tezonco",
+    "display_name": "Avenida Tláhuac, San Lorenzo Tezonco, Iztapalapa, Ciudad de México, 09790, México, San Lorenzo Tezonco, Ciudad de México, Iztapalapa, Ciudad de México, 09790, México"
+  },
+  {
+    "cluster": 43,
+    "lat": 19.373059,
+    "lon": -99.188769,
+    "alcaldia": "Benito Juárez",
+    "road": "Calle Tiziano",
+    "suburb": "Colonia Mixcoac",
+    "vialidad": "Calle Tiziano · Colonia Mixcoac",
+    "display_name": "Calle Tiziano, Colonia Mixcoac, San Juan Malinaltongo, Ciudad de México, Benito Juárez, Ciudad de México, 03910, México"
+  },
+  {
+    "cluster": 132,
+    "lat": 19.421477,
+    "lon": -99.143336,
+    "alcaldia": "Cuauhtémoc",
+    "road": "Calle Doctor C. Liceaga",
+    "suburb": "Roma",
+    "vialidad": "Calle Doctor C. Liceaga · Roma",
+    "display_name": "Calle Doctor C. Liceaga, Doctores, Roma, Ciudad de México, Cuauhtémoc, Ciudad de México, 06720, México"
+  }
+]

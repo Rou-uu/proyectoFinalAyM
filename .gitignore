@@ -1,0 +1,28 @@
+# Datos crudos pesados (se descargan; ver README). Los .parquet procesados SÍ se versionan.
+data/raw/*.csv
+data/raw/*.zip
+
+# Python
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+
+# LaTeX (temporales de compilación; reporte.tex y reporte.pdf sí se versionan)
+reports/*.aux
+reports/*.log
+reports/*.out
+reports/*.toc
+reports/*.fls
+reports/*.fdb_latexmk
+reports/*.synctex.gz
+
+# Sistema
+.DS_Store
+
+# Entornos
+.venv/
+venv/
+env/
+
+/.quarto/
+**/*.quarto_ipynb
