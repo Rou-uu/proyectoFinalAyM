@@ -69,10 +69,6 @@ finalProyectoAyM/
 │   ├── uml_clases.mmd            Fuente Mermaid del UML
 │   └── generar_uml.py            Script que dibuja el UML
 │
-├── _generadores/                 Scripts que generaron las versiones iniciales de
-│                                 los notebooks (referencia; la fuente actual son
-│                                 notebooks/ + src/)
-│
 ├── models/
 │   ├── modelo_rf.joblib          Modelo final (RandomForest)
 │   └── modelo_mlp.joblib         Red neuronal (comparación)
