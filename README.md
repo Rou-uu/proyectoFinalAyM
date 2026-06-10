@@ -206,6 +206,7 @@ Detalle completo en [`reports/reporte.pdf`](reports/reporte.pdf) y
 
 ## 8. Entregables en línea
 
-- **Sitio (GitHub Pages):** TODO
+- **Repositorio:** <https://github.com/Rou-uu/proyectoFinalAyM>
+- **Sitio (GitHub Pages):** <https://rou-uu.github.io/proyectoFinalAyM/>
+  (activar en *Settings → Pages → Branch: `main` / carpeta `/docs`*)
 - **Video de presentación:** TODO
-- **Repositorio:** TODO
