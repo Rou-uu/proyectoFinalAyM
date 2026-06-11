@@ -184,10 +184,11 @@ Branch: `main` / carpeta `/docs`**. La URL quedará como
 | Red neuronal (MLP) | 0.686 | 0.638 | 0.726 |
 
 - El RandomForest supera ampliamente a la línea base (F1 macro +0.27).
-- El **canal de reporte** es el predictor más fuerte de la veracidad (radio y
-  cámara ~93 % confirmados vs. llamada al 911 ~60 %).
+- El **tipo de incidente** y el **canal de reporte** concentran la señal del
+  modelo (importancias 0.102 y 0.031); en el análisis bivariado, radio y cámara
+  confirman ~93 % frente a ~60 % de la llamada al 911.
 - DBSCAN identifica corredores/cruceros viales con nombre propio (Circuito
-  Interior, Calz. Ignacio Zaragoza, Av. Tláhuac, …).
+  Interior, Calz. Ignacio Zaragoza, Distribuidor Vial San Antonio, …).
 
 Detalle completo en [`reports/reporte.pdf`](reports/reporte.pdf) y
 [`reports/diccionario_datos.md`](reports/diccionario_datos.md).

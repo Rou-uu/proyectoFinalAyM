@@ -2270,7 +2270,7 @@ Falso/Inform. (0)     0.5390    0.6625    0.5944     21164
 </div>
 </div>
 </div>
-<p>Dominan <code>tipo_entrada</code> (el canal por el que entra el reporte) e <code>incidente_c4</code> (el tipo de incidente), por encima del resto. El <strong>como</strong> y el <strong>que</strong> se reporta predice mejor la veracidad del incidente que el <strong>cuando</strong> o el <strong>donde</strong>. Esto tiene sentido operativo, pues una camara o un boton de auxilio suelen ir asociados a eventos confirmados, mientras que las llamadas al 911 son mucho mas heterogeneas. Variables temporales y de ubicacion aportan, pero de forma secundaria.</p>
+<p>Dominan <code>incidente_c4</code> (el tipo de incidente) y <code>tipo_entrada</code> (el canal por el que entra el reporte), por encima del resto. El <strong>como</strong> y el <strong>que</strong> se reporta predice mejor la veracidad del incidente que el <strong>cuando</strong> o el <strong>donde</strong>. Esto tiene sentido operativo, pues una camara o un boton de auxilio suelen ir asociados a eventos confirmados, mientras que las llamadas al 911 son mucho mas heterogeneas. Variables temporales y de ubicacion aportan, pero de forma secundaria.</p>
 </section>
 <section id="analisis-de-errores-que-canal-de-entrada-confunde-mas-al-modelo" class="level2">
 <h2 class="anchored" data-anchor-id="analisis-de-errores-que-canal-de-entrada-confunde-mas-al-modelo">9. Analisis de errores: que canal de entrada confunde mas al modelo</h2>
@@ -2360,7 +2360,7 @@ Falso/Inform. (0)     0.5390    0.6625    0.5944     21164
 </div>
 </div>
 </div>
-<p>En volumen, la inmensa mayoria de los errores y falsos negativos son <strong>LLAMADAS DEL 911</strong>, simplemente porque es el canal mas voluminoso y mas ambiguo (mezcla emergencias reales con falsas alarmas). Mirando la <strong>tasa de error</strong> por canal se ve que los canales automatizados o verificados (camara, boton de auxilio) tienden a ser mas predecibles, mientras que la llamada al 911 concentra la incertidumbre. Es coherente con la seccion 8, donde vimos que <code>tipo_entrada</code> es la variable más informativa, y justo el canal menos discriminante es donde el modelo más se equivoca. La implicacion operativa es que el margen de mejora esta en enriquecer la informacion de las llamadas del 911 (p.&nbsp;ej. con el transcrito de la llamada), no en los canales ya confiables.</p>
+<p>En volumen, la inmensa mayoria de los errores y falsos negativos son <strong>LLAMADAS DEL 911</strong>, simplemente porque es el canal mas voluminoso y mas ambiguo (mezcla emergencias reales con falsas alarmas). Mirando la <strong>tasa de error</strong> por canal se ve que los canales automatizados o verificados (camara, boton de auxilio) tienden a ser mas predecibles, mientras que la llamada al 911 concentra la incertidumbre. Es coherente con la seccion 8, donde vimos que <code>incidente_c4</code> es la variable más informativa (seguida de <code>tipo_entrada</code>), y justo el canal menos discriminante es donde el modelo más se equivoca. La implicacion operativa es que el margen de mejora esta en enriquecer la informacion de las llamadas del 911 (p.&nbsp;ej. con el transcrito de la llamada), no en los canales ya confiables.</p>
 </section>
 <section id="nota-de-fuga-que-pasa-si-incluimos-tiempo_cierre_min" class="level2">
 <h2 class="anchored" data-anchor-id="nota-de-fuga-que-pasa-si-incluimos-tiempo_cierre_min">10. Nota de fuga: que pasa si incluimos <code>TIEMPO_CIERRE_MIN</code></h2>

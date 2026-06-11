@@ -16,6 +16,7 @@
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{array}
+\usepackage{tabularx}
 \usepackage{longtable}
 \usepackage{xcolor}
 \usepackage{enumitem}
@@ -84,7 +85,7 @@ descubrimiento de corredores de incidentes en la Ciudad de México\par}
 Contacto Ciudadano (C5) de la Ciudad de México recibe cientos de miles de
 reportes de incidentes viales al año a través de distintos canales (llamadas al
 911, botones de auxilio, cámaras, radio). Una fracción importante de esos
-reportes no corresponde a un incidente confirmado: son falsos o meramente
+reportes no corresponde a un incidente confirmado, sino suelen ser falsos o meramente
 informativos. Despachar unidades de emergencia a reportes que no lo ameritan
 desperdicia recursos escasos y retrasa la atención de incidentes reales.
 
@@ -92,8 +93,8 @@ desperdicia recursos escasos y retrasa la atención de incidentes reales.
 \emph{al momento de recibir un reporte} (canal de entrada, tipo de incidente,
 hora, alcaldía y ubicación), estime la probabilidad de que sea un incidente
 real (confirmado, ``afirmativo'') frente a falso/informativo, para apoyar la
-priorización del despacho; y, de forma complementaria, identificar mediante
-agrupamiento espacial las \emph{vialidades} donde se concentran los incidentes
+priorización del despacho, y de forma complementaria, identificar mediante
+agrupamiento espacial las \emph{vialidades y/o cruces} donde se concentran los incidentes
 y de qué tipo, como insumo para la planeación operativa.
 
 \textbf{Justificación y valor.} En nuestro conjunto de datos, el 36.5\,\% de
@@ -123,9 +124,9 @@ académico reconocido: estudios recientes sobre siniestralidad vial en la CDMX
 la emplean explícitamente como una de sus fuentes primarias
 \cite{herreraortiz}.
 
-\textbf{Tamaño.} El archivo crudo contiene 504\,261 reportes; tras la
+\textbf{Tamaño.} El archivo crudo contiene 504\,261 reportes, que tras la
 preparación (Sección~\ref{sec:limpieza}) el conjunto de trabajo queda en
-\textbf{289\,885 reportes y 18 variables}, con mezcla de variables numéricas y
+\textbf{289\,885 reportes y 18 variables} con mezcla de variables numéricas y
 categóricas.
 
 \textbf{Variables.} El diccionario completo (significado, tipo, valores
@@ -137,8 +138,8 @@ principales.
 \centering
 \caption{Variables principales (diccionario resumido).}
 \label{tab:dic}
-\small
-\begin{tabular}{@{}lll@{}}
+\footnotesize
+\begin{tabularx}{\textwidth}{@{}p{3.6cm} l >{\raggedright\arraybackslash}X@{}}
 \toprule
 \textbf{Variable} & \textbf{Tipo} & \textbf{Descripción / valores} \\
 \midrule
@@ -148,24 +149,29 @@ principales.
 \texttt{incidente\_c4} & cat. (16) & Choque s/lesionados, choque c/lesionados, atropellado, \dots\\
 \texttt{tipo\_incidente\_c4} & cat. (7) & Accidente, lesionado, cadáver, \dots\\
 \texttt{alcaldia\_catalogo} & cat. (16) & Las 16 alcaldías de la CDMX\\
-\texttt{HORA, FRANJA, dia\_semana, MES, ANIO} & num./cat. & Variables temporales del reporte\\
-\texttt{latitud, longitud} & num. & Ubicación del incidente\\
+\texttt{HORA}, \texttt{FRANJA}, \texttt{dia\_semana}, \texttt{MES}, \texttt{ANIO} & num./cat. & Variables temporales del reporte\\
+\texttt{latitud}, \texttt{longitud} & num. & Ubicación del incidente\\
 \texttt{TIEMPO\_CIERRE\_MIN} & num. & Minutos hasta el cierre (\emph{fuga}: excluida del modelo)\\
 \texttt{clas\_con\_f\_alarma} & cat. & Clasificación posterior al cierre (\emph{fuga}: excluida del modelo)\\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{table}
 
-\textbf{Limitaciones conocidas.} (i) El etiquetado de veracidad es
-\emph{institucional}: refleja los criterios de cierre del C5, no una
-verificación independiente; cualquier sesgo de ese proceso lo hereda el
-modelo. (ii) La llamada del 911 concentra el 87.6\,\% del volumen, de modo que
-el desempeño global está dominado por el canal más ambiguo. (iii) La
-geocodificación es incompleta en una fracción mínima (366 reportes sin
-alcaldía, 0.13\,\%). (iv) La ventana temporal es 2022--febrero de 2024, por lo
-que los patrones podrían no extrapolar a periodos con dinámicas distintas.
-(v) No se dispone de variables de contexto (clima, tráfico, contenido de la
-llamada) que probablemente elevarían el techo de predicción.
+\textbf{Algunas limitaciones a tener en cuenta.} 
+\begin{itemize}
+  \item El etiquetado de veracidad es \emph{institucional}: refleja los criterios de cierre del C5,
+   no una verificación independiente; cualquier sesgo de ese proceso lo hereda el modelo.
+  \item La llamada del 911 concentra el 87.6\,\% del volumen, de modo que
+  el desempeño global está dominado por el canal más ambiguo.
+  \item La geocodificación es incompleta en una fracción mínima (366 reportes sin
+  alcaldía, 0.13\,\%)
+  \item La ventana temporal es 2022--febrero de 2024, por lo que los patrones podrían
+   no extrapolar a periodos con dinámicas distintas.
+  \item No se dispone de variables de contexto (clima, tráfico, contenido de la 
+  llamada) que probablemente elevarían el techo de predicción.
+\end{itemize}
+  
+
 
 % ============================================================================
 % 4. LIMPIEZA Y PREPARACIÓN DE DATOS
@@ -207,23 +213,29 @@ eliminan. El target se define sobre los reportes no duplicados:
 (\texttt{F}) o informativo (\texttt{I}). Se descartó la alternativa de contar
 los duplicados como reales porque produce un balance mucho peor
 ($\sim$79/21) y un target conceptualmente borroso (mezcla ``confirmado'' con
-``ya reportado'').
+``ya reportado''), incrementando el riesgo de la tendencia al modelo Dummy. \\
 
-\textbf{Otras decisiones.} (i) El segundo paso elimina 50 reportes de
-diciembre de 2021 que se colaron en el corte (ruido de frontera). (ii)
-\emph{Faltantes}: solo tres columnas tienen nulos y todos son marginales
-—\texttt{alcaldia\_catalogo} 366 (0.13\,\%), \texttt{tipo\_entrada} 3,
-\texttt{TIEMPO\_CIERRE\_MIN} 2—; no se eliminan filas: el
-\texttt{ColumnTransformer} del modelo los imputa con la categoría más
-frecuente. (iii) \emph{Duplicados exactos}: tras retirar los cierres
-\texttt{D} no queda ningún folio repetido ni fila idéntica. (iv)
-\emph{Outliers}: la regla IQR sobre \texttt{TIEMPO\_CIERRE\_MIN} marca 49\,211
+\textbf{Otras decisiones.}
+
+\begin{itemize}
+  \item El segundo paso elimina 50 reportes de diciembre de 2021 que se colaron en el corte (ruido de frontera).
+  \item \emph{Faltantes}: solo tres columnas tienen nulos y todos son marginales
+  (\texttt{alcaldia\_catalogo} 366 (0.13\,\%), \texttt{tipo\_entrada} 3,
+  \texttt{TIEMPO\_CIERRE\_MIN} 2). No se eliminan filas: el
+  \texttt{ColumnTransformer} del modelo los imputa con la categoría más
+  frecuente.
+  \item \emph{Duplicados exactos}: tras retirar los cierres \texttt{D} no queda ningún folio repetido ni fila idéntica
+  \item \emph{Outliers}: la regla IQR sobre \texttt{TIEMPO\_CIERRE\_MIN} marca 49\,211
 reportes (17.0\,\%) por encima del límite superior (287.5 min); no se eliminan
 porque son tiempos de servicio \emph{reales} (casos complejos que tardan en
 cerrarse), no errores de captura, y porque esa columna no es variable del
-modelo. (v) \emph{Anti-fuga}: \texttt{TIEMPO\_CIERRE\_MIN} y
-\texttt{clas\_con\_f\_alarma} se conservan en el dataset solo para análisis;
+modelo.
+
+  \item \emph{Anti-fuga}: \texttt{TIEMPO\_CIERRE\_MIN} y
+\texttt{clas\_con\_f\_alarma} se conservan en el dataset solo para análisis, pero
 quedan excluidas del modelo (Sección~\ref{sec:modelo}).
+  
+\end{itemize}
 
 % ============================================================================
 % 5. ANÁLISIS EXPLORATORIO
@@ -233,10 +245,10 @@ quedan excluidas del modelo (Sección~\ref{sec:modelo}).
 \subsection{Balance del target}
 
 Tras la preparación, el 63.5\,\% de los reportes son reales (cierre
-afirmativo) y el 36.5\,\% falsos/informativos: un desbalance moderado de
+afirmativo) y el 36.5\,\% falsos/informativos, esto muestra un desbalance moderado de
 1.74:1 (Figura~\ref{fig:balance}). De aquí se derivan dos decisiones de
-modelado: la métrica rectora es el \textbf{F1 macro} —la \emph{accuracy} la
-alcanzaría casi un clasificador trivial que diga ``real'' a todo— y el bosque
+modelado: la métrica rectora es el \textbf{F1 macro} ( ya que la \emph{accuracy} la
+alcanzaría casi un clasificador trivial que diga ``real'' a todo) y el bosque
 usa \texttt{class\_weight='balanced'} para no sacrificar el recall de la clase
 minoritaria, pues detectar reportes falsos es justamente el valor de negocio.
 
@@ -254,8 +266,8 @@ curtosis $-0.58$; mediana 15\,h): los reportes se reparten a lo largo del día
 con concentración vespertina. En cambio \texttt{TIEMPO\_CIERRE\_MIN} está
 fuertemente sesgada a la derecha (asimetría 3.7, curtosis 15.5): mediana de
 $\sim$189 minutos con una cola que llega a 4\,657. La regla IQR marca 17.0\,\%
-de atípicos en esa cola (límite superior 287.5 min); se conservan por ser
-tiempos de servicio reales —casos complejos que tardan en cerrarse— y porque
+de atípicos en esa cola (límite superior 287.5 min) que se conservan por ser
+tiempos de servicio reales y porque
 la variable queda fuera del modelo por fuga. Esta forma extrema, típica de
 tiempos de servicio, ilustra por qué los atípicos deben evaluarse en su
 contexto y no eliminarse mecánicamente.
@@ -276,15 +288,15 @@ aportan señal temporal moderada al modelo.
 
 \subsection{Geografía del reporte: ¿quién reporta y qué tan confiable es?}
 
-\textbf{Por canal de entrada.} Es el hallazgo central del EDA
-(Figura~\ref{fig:canal}). Los canales \emph{institucionales} operados por
-personal del C5 confirman casi siempre: radio 93.3\,\%, cámara 92.9\,\% y
-botón de auxilio 88.4\,\%. La llamada del 911 —que concentra el 87.6\,\% del
-volumen— confirma solo 59.8\,\%, y los aplicativos ciudadanos apenas
-28.4\,\%. La implicación operativa es directa: lo que entra por canales
+\textbf{Por canal de entrada.}
+ Los canales \emph{institucionales} operados por
+personal del C5 confirman casi siempre con radio 93.3\,\%, cámara 92.9\,\% y
+botón de auxilio 88.4\,\%. Por otro lado, las llamadas del 911 (que concentra el 87.6\,\% del
+volumen) confirman solamente 59.8\,\%, y los aplicativos ciudadanos apenas
+28.4\,\%. Esto muestra que lo que entra por canales
 institucionales puede despacharse casi automáticamente con alta prioridad,
-mientras que el escrutinio debe concentrarse en la avalancha de llamadas
-ciudadanas, donde vive la ambigüedad.
+mientras que las verificaciones más precisas deben concentrarse en la avalancha de llamadas
+ciudadanas, donde hay mayor ambigüedad.
 
 \begin{figure}[H]\centering
 \includegraphics[width=0.78\linewidth]{01_fuente_confirmacion.png}
@@ -293,11 +305,11 @@ ciudadanas, donde vive la ambigüedad.
 \end{figure}
 
 \textbf{Por alcaldía.} El ranking va de Cuauhtémoc (75.3\,\%) y Azcapotzalco
-(72.4\,\%) hasta Xochimilco (51.8\,\%) y Cuajimalpa (50.7\,\%): un rango de
-$\sim$25 puntos (Figura~\ref{fig:alcaldia}). Las alcaldías centrales —con más
-cámaras, operadores y tráfico verificable— tienden a mayor confirmación que la
-periferia. La brecha es real pero menor que la del canal ($\sim$33 puntos): la
-geografía aporta señal complementaria.
+(72.4\,\%) hasta Xochimilco (51.8\,\%) y Cuajimalpa (50.7\,\%), sobre un rango de
+$\sim$25 puntos (Figura~\ref{fig:alcaldia}). Las alcaldías centrales que cuentan con más
+cámaras, operadores y tráfico verificable tienden a mayor confirmación que la
+periferia. La brecha es real pero menor que la del canal ($\sim$33 puntos), por lo que la
+geografía sí aporta señal aunque sea complementaria.
 
 \begin{figure}[H]\centering
 \includegraphics[width=0.78\linewidth]{01_alcaldia_confirmacion.png}
@@ -307,20 +319,20 @@ geografía aporta señal complementaria.
 
 \textbf{Mezcla canal $\times$ alcaldía.} La prueba $\chi^2$ rechaza la
 independencia ($\chi^2 = 3\,719.8$, gl $= 120$, $p \approx 0$), pero con
-$n \approx 290$\,k casi cualquier asociación resulta ``significativa'': lo
-informativo es el tamaño de efecto, y la V de Cramér $= 0.040$ es muy pequeña.
+$n \approx 290$\,k casi cualquier asociación resulta ``significativa''. Lo que realmente es
+informativo es el tamaño de efecto, y la V de Cramér $= 0.040$ que es muy pequeña.
 La cámara pesa más en alcaldías centrales y el botón de auxilio en la
 periferia, pero el dominio de la llamada del 911 (entre el 80\,\% y el 95\,\% del
 volumen según la alcaldía) homogeneiza la mezcla. Es un buen ejemplo de que
 \emph{estadísticamente significativo} $\neq$ \emph{efecto grande}.
 
 \textbf{Por franja horaria.} La confiabilidad decae a lo largo del día
-(Figura~\ref{fig:franja}): madrugada 70.1\,\% y mañana 68.3\,\% superan la
+(Figura~\ref{fig:franja}). En la madrugada 70.1\,\% y mañana 68.3\,\% superan la
 media global (63.5\,\%), mientras tarde (61.5\,\%) y noche (60.1\,\%) quedan
-por debajo —una brecha de 10 puntos. El detalle operativo es que tarde y noche
-concentran además el mayor volumen (33.1\,\% y 33.6\,\%): las horas con más
+por debajo, con una brecha de 10 puntos. Vemos entonces que en la tarde y noche
+se concentran además el mayor volumen (33.1\,\% y 33.6\,\%), pues las horas con más
 reportes son justamente las de menor proporción de incidentes reales. El
-patrón es coherente con el perfil horario de los canales: en horas valle la
+patrón es coherente con el perfil horario de los canales donde en horas valle la
 vigilancia institucional (que confirma $\sim$90\,\%) sostiene una proporción
 mayor del reporte, y la madrugada hereda parte de esa confiabilidad.
 
@@ -335,9 +347,9 @@ mayor del reporte, y la madrugada hereda parte de esa confiabilidad.
 \begin{itemize}[nosep]
   \item Target con desbalance moderado (63.5/36.5) $\Rightarrow$ F1 macro como
         métrica rectora y pesos de clase balanceados.
-  \item El \textbf{canal de entrada} separa fuertemente la veracidad
-        (institucionales $\sim$90\,\% vs.\ 911 $\sim$60\,\%); se anticipa como
-        variable clave del modelo.
+  \item El \textbf{canal de entrada} y el \textbf{tipo de incidente} separan
+        fuertemente la veracidad (canales institucionales $\sim$90\,\% vs.\ 911
+        $\sim$60\,\%); se anticipan como señales clave del modelo.
   \item La \textbf{alcaldía} (rango 25 pts) y la \textbf{franja horaria}
         (rango 10 pts) aportan señal complementaria.
   \item Calidad de datos alta: faltantes marginales ($\leq$ 0.13\,\%), sin
@@ -371,10 +383,10 @@ efecto de la fuga se cuantifica en la Sección~\ref{sec:fuga}.
 
 \textbf{Patrón Pipeline a nivel de modelo.} El clasificador se arma como un
 \texttt{Pipeline} de \texttt{scikit-learn} \cite{sklearn} que encadena el
-preprocesamiento y el estimador en un solo objeto:
+preprocesamiento y el estimador en un solo objeto
 \texttt{ColumnTransformer} con imputación por moda + \emph{one-hot}
 (\texttt{handle\_unknown='ignore'}) para las categóricas y paso directo para
-las numéricas (un bosque corta por umbrales: no necesita escalado), seguido de
+las numéricas (un bosque corta por umbrales y no necesita escalado), seguido de
 un \texttt{RandomForestClassifier} \cite{rf} con 300 árboles,
 \texttt{class\_weight='balanced'} y semilla 42. Esto garantiza que el mismo
 preprocesamiento se aplique de forma idéntica en entrenamiento, validación y
@@ -498,9 +510,8 @@ permutar cada variable original).}
 La tasa de error por canal (Tabla~\ref{tab:errores}) confirma dónde vive la
 incertidumbre: la llamada del 911 se equivoca en el 36.3\,\% de los casos,
 mientras los canales verificados son mucho más predecibles (cámara 8.7\,\%,
-radio 7.1\,\%). De los 11\,991 falsos negativos —reportes reales clasificados
-como falsos, el error operativamente más grave— la inmensa mayoría proviene
-del 911, que es a la vez el canal más voluminoso y el menos discriminante. La
+radio 7.1\,\%). De los 11\,991 falsos negativos la inmensa mayoría proviene
+de llamadas al 911, que es a la vez el canal más voluminoso y el menos discriminante. La
 implicación es que el margen de mejora está en enriquecer la información de
 las llamadas ciudadanas (p.\,ej.\ con atributos del transcrito de la llamada),
 no en los canales ya confiables.
@@ -529,10 +540,10 @@ Aplicativos       & 103     & 2.9\\
 Para justificar empíricamente la exclusión anti-fuga, se reentrenó el
 \emph{mismo} Random Forest sobre el \emph{mismo} split añadiendo
 \texttt{TIEMPO\_CIERRE\_MIN} como variable: el F1 macro salta de 0.6581 a
-0.7184 ($+0.060$). El salto es \emph{espurio}: el tiempo de cierre solo se
-conoce después de resolver el caso, de modo que en producción la columna no
+0.7184 ($+0.060$). Vemos que hubo un salo, pero el tiempo de cierre solo se
+conoce después de resolver el caso, de modo que en uso real la columna no
 existiría y la mejora se evaporaría. El modelo honesto es el de la
-Tabla~\ref{tab:modelos}; este experimento confirma que la frontera anti-fuga
+Tabla~\ref{tab:modelos}. Este experimento confirma que la frontera anti-fuga
 fue correcta.
 
 \subsection{Comparación con una red neuronal (MLP)}
@@ -543,13 +554,15 @@ Como comparación se entrenó un \texttt{MLPClassifier} (capas 128--64,
 preprocesamiento salvo el escalado de las numéricas
 (\texttt{StandardScaler}), que el descenso de gradiente sí requiere. La MLP
 alcanza la mayor accuracy (0.686) y un AUC competitivo (0.726), pero su F1
-macro (0.638) queda por debajo del Random Forest (0.658): sin un mecanismo que
-compense el desbalance, la red se inclina hacia la clase mayoritaria —su
-recall de la clase ``falso'' cae a 0.44 frente al 0.66 del bosque—, dejando
+macro (0.638) queda por debajo del Random Forest (0.658). Esto debido a que sin un mecanismo que
+compense el desbalance, la red se inclina hacia la clase mayoritaria (su
+recall de la clase ``falso'' cae a 0.44 frente al 0.66 del bosque), dejando
 escapar más reportes falsos clasificados como reales. Dado que el valor de
 negocio está justamente en filtrar los falsos para racionar los recursos de
 despacho, el Random Forest balanceado se mantiene como modelo final por
-desempeño en la métrica rectora e interpretabilidad.
+desempeño en la métrica rectora e interpretabilidad. Ahora, en casos por donde
+atender la mayor cantidad de llamadas sea prioritario, la MLP podría ser una 
+alternativa a considerar (este no es el caso).
 
 \subsection{Modelo final ligero y persistencia}
 
@@ -557,11 +570,11 @@ El ganador del tuning (\texttt{min\_samples\_leaf}$=1$) producía un archivo
 serializado de $\sim$700 MB, inviable de versionar en GitHub (límite de 100
 MB). El modelo \emph{que se persiste} se reentrenó con
 \texttt{min\_samples\_leaf}$=20$ (mismos 300 árboles, profundidad 20, pesos
-balanceados): su F1 macro en prueba es 0.6561, una diferencia de $-0.002$
-—prácticamente nula— a cambio de un archivo de \textbf{43.1 MB}
-(\texttt{models/modelo\_rf.joblib}, compresión nivel 3). La regularización por
-tamaño de hoja poda el bosque sin degradar el desempeño: igual de bueno, mucho
-más ligero y versionable.
+balanceados) y un F1 macro en prueba de 0.6561, con una diferencia ($-0.002$)
+basicamente inexistente a cambio de un archivo de \textbf{43.1 MB}
+(\texttt{models/modelo\_rf.joblib}). La regularización por
+tamaño de hoja poda el bosque sin degradar el desempeño siendo casi igual de bueno, 
+pero mucho más ligero y versionable.
 
 % ============================================================================
 % 7. CLUSTERING
@@ -571,18 +584,20 @@ más ligero y versionable.
 \subsection{Propósito y elección del algoritmo}
 
 Cambiamos de pregunta: en lugar de \emph{predecir} si un reporte se confirma,
-buscamos estructura geográfica —\textbf{¿en qué vialidades de la CDMX se
-concentran los incidentes y de qué tipo son?}— como insumo para la planeación
-operativa. Se usa \textbf{DBSCAN} \cite{dbscan}, que agrupa por
-\emph{densidad}, por tres razones: (i) encuentra zonas densas de forma libre
-(un corredor vial es una nube \emph{alargada} que sigue el trazo de una
-avenida; K-Means solo arma grupos aproximadamente esféricos y nunca capturaría
-un corredor lineal); (ii) no exige fijar $k$: el número de corredores
-\emph{emerge} de la densidad de los datos; y (iii) separa el ruido —los
-incidentes dispersos por la traza urbana— en lugar de forzarlos a un grupo, y
-ese ruido es señal, no error. El target \texttt{REAL} \emph{no} participa en
-el agrupamiento: se usa solo a posteriori para caracterizar los grupos
-(validación externa).
+buscamos estructura geográfica. Nos preguntamos, \textbf{¿en qué vialidades de la CDMX se
+concentran los incidentes y de qué tipo son?}. Se usa \textbf{DBSCAN} \cite{dbscan}, que agrupa por
+\emph{densidad}, por tres principales razones:
+
+\begin{itemize}
+  \item encuentra zonas densas de forma libre (un corredor vial es una nube
+  \emph{alargada} que sigue el trazo de una avenida. Con K-Means solo encontrariamos grupos
+  aproximadamente esféricos y nunca capturaría un corredor lineal).
+  \item no exige fijar $k$. El número de corredores \emph{emerge} de la densidad de
+  los datos (desconocemos cuantos hay).
+  \item separa el ruido en lugar de forzarlos a un grupo, y ese ruido es señal, no error. El target \texttt{REAL}
+  \emph{no} participa en el agrupamiento y se usa solo a posteriori para caracterizar
+  los grupos (validación externa).
+\end{itemize}
 
 \subsection{Preprocesamiento y selección de parámetros}
 
@@ -590,51 +605,51 @@ el agrupamiento: se usa solo a posteriori para caracterizar los grupos
 no tiene un significado físico claro (a la latitud de la CDMX un grado de
 longitud y uno de latitud miden distinto). Se proyecta con una equirectangular
 local centrada en la ciudad ($\text{lat}_0 = 19.36$,
-$\text{lon}_0 = -99.13$), de modo que $\varepsilon$ queda \textbf{en metros
+$\text{lon}_0 = -99.13$), de modo que $\varepsilon$ (la distancia de \textbf{DBSCAN}) queda \textbf{en metros
 sobre el asfalto} y es directamente interpretable.
 
 \textbf{Curva de $k$-distancias.} La distancia de cada punto a su $k$-ésimo
 vecino ($k = \texttt{min\_samples}$), calculada sobre las 289\,885 filas
 completas (una submuestra bajaría la densidad local y desplazaría el codo),
-es plana y baja solo en su primer tramo —el $\sim$12\,\% de los puntos más
-densos tiene a su vecino 200 a $\leq$150 m— y enseguida se dispara: ese
+es plana y baja solo en su primer tramo donde el $\sim$12\,\% de los puntos más
+densos tiene a su vecino 200 a $\leq$150 m y enseguida se dispara. Ese
 despegue es el codo. Se eligen $\varepsilon = 150$ m (el ancho típico de un
 crucero o vialidad densa) y \texttt{min\_samples} $= 200$, deliberadamente
-alto: no se buscan micro-cúmulos de cuatro choques sino \emph{corredores con
-masa crítica} ($\geq$200 incidentes en 2022--2024).
+alto ya que no se buscan micro-cúmulos de cuatro choques sino \emph{corredores con
+masa crítica} ($\geq$200 incidentes en 2022--2024). Ahora, debido a que $\varepsilon$
+es interpretable, podríamos jugar buscando ahora no vialidades, sino cruces peligrosos
+reduciendo $\varepsilon$ y la cantidad minima de choques en la zona. 
 
 \subsection{Resultados}
 
-DBSCAN encuentra \textbf{168 cúmulos densos} y deja 223\,958 puntos
-(77.3\,\%) como ruido; 65\,927 incidentes (22.7\,\%) caen en alguna
-estructura densa. El ruido alto no es un fallo del método: tras eliminar los
+DBSCAN encuentra \textbf{168 cúmulos densos}, deja 223\,958 puntos
+(77.3\,\%) como ruido y 65\,927 incidentes (22.7\,\%) caen en alguna
+estructura densa. El ruido alto no es un fallo del método, puede significar que tras eliminar los
 duplicados, la mayoría de los incidentes ocurre \emph{fuera} de corredores
-densos, repartida por toda la traza urbana. La lectura operativa es que
-existe una minoría ``concentrada'' atacable por corredores concretos y una
-mayoría ``difusa'' que exige cobertura general.
+densos, repartida por toda la traza urbana. Esto es algo que esperamos pues estos incidentes
+pueden suceder en cualquier lugar, pero si notamos que  existe una minoría ``concentrada''
+atacable por corredores concretos y una mayoría ``difusa'' que exige cobertura general.
 
 \textbf{Morfología: corredores vs.\ cruceros.} Para cada cluster del top-12 se
 midió con PCA la \emph{elongación} ($\sqrt{\text{var}_1/\text{var}_2}$) y la
-\emph{longitud} sobre el eje principal: solo 1 alcanza la forma de corredor
+\emph{longitud} sobre el eje principal, viendo que solo 1 alcanza la forma de corredor
 lineal (elongación $\geq 3$ y $\geq 1$ km) y 11 son cruceros o zonas
 compactas. La deduplicación adelgaza las líneas y deja sobre todo manchas
-densas alrededor de nodos. La distinción es operativa, no cosmética: un
-crucero se cubre con una grúa o patrulla fija; un corredor exige patrullaje a
+densas alrededor de nodos. Con esto podemos tomar medidas particulares, pues mientras que a un
+crucero lo cubrimos con una grúa o patrulla fija, un corredor exige patrullaje a
 lo largo del tramo.
 
 \textbf{Nombres de vialidad.} Los centroides del top se cruzaron con un
-catálogo geocodificado previamente (sin llamar a ninguna API desde el
-notebook), asignando el registro más cercano en metros con un umbral de
-1\,000 m: si el registro queda más lejos, se usa una etiqueta genérica por
-alcaldía antes que arriesgar un nombre equivocado (columna
-\texttt{dist\_geo\_m} auditable). La Tabla~\ref{tab:corredores} resume los 12
-nodos principales.
+catálogo geocodificado previamente, asignando el registro más cercano en metros con un umbral de
+1\,000 m. En caso de que el registro quede más lejos, se usa una etiqueta genérica por
+alcaldía antes que arriesgar un nombre equivocado. La Tabla~\ref{tab:corredores} 
+resume los 12 nodos principales.
 
 \begin{table}[H]
 \centering
 \caption{Los 12 nodos densos más grandes (DBSCAN, $\varepsilon=150$ m,
 \texttt{min\_samples}=200). El incidente dominante en todos es \emph{choque
-sin lesionados}; la franja pico cae en tarde/noche.}
+sin lesionados}. La franja pico cae en tarde/noche.}
 \label{tab:corredores}
 \small
 \begin{tabular}{@{}lrrll@{}}
@@ -650,7 +665,7 @@ Avenida 4                           & 900    & 59.9 & Venustiano Carranza & cruc
 Zona densa (Álvaro Obregón)         & 854    & 53.9 & Álvaro Obregón      & crucero/zona\\
 Distribuidor Vial San Antonio       & 785    & 60.8 & Benito Juárez       & crucero/zona\\
 Zona densa (Álvaro Obregón)         & 777    & 45.9 & Álvaro Obregón      & crucero/zona\\
-Calz.\ General Ignacio Zaragoza     & 756    & 47.8 & Iztapalapa          & crucero/zona\\
+Calz.\ General Ignacio Zaragoza     & 756    & 47.8 & Iztacalco           & crucero/zona\\
 Zona densa (Iztapalapa)             & 725    & 47.9 & Iztapalapa          & crucero/zona\\
 Zona densa (Coyoacán)               & 723    & 53.4 & Coyoacán            & crucero/zona\\
 \bottomrule
@@ -660,7 +675,7 @@ Zona densa (Coyoacán)               & 723    & 53.4 & Coyoacán            & cr
 \begin{figure}[H]\centering
 \includegraphics[width=0.9\linewidth]{figura_dbscan_vialidades.png}
 \caption{Nodos densos de incidentes sobre la silueta de la CDMX (contorno
-oficial de alcaldías). El gris es ruido (incidentes dispersos); los colores son
+oficial de alcaldías). El gris es ruido (incidentes dispersos) y los colores son
 clusters de DBSCAN, con los principales etiquetados por su vialidad. La versión
 \textbf{interactiva} (zoom, paneo y \emph{hover} con vialidad, tipo, alcaldía y
 \% real) está en \texttt{figures/mapa\_corredores.html}.}
@@ -670,22 +685,22 @@ clusters de DBSCAN, con los principales etiquetados por su vialidad. La versión
 \subsection{Evaluación e interpretación}
 
 \textbf{Cohesión interna.} El coeficiente de silueta sobre los puntos no-ruido
-(muestra de 20\,000, semilla 42) es \textbf{0.753}: los puntos densos están,
+(muestra de 20\,000, semilla 42) es \textbf{0.753}. Los puntos densos están,
 en promedio, mucho más cerca de su propio cluster que del vecino. Los grupos
-tienen cohesión y separación reales, no son cortes arbitrarios.
+tienen cohesión y separación reales y no son cortes arbitrarios.
 
 \textbf{Validación externa con el target.} Como \texttt{REAL} nunca participó
 en el agrupamiento, comparar el \% afirmativo por cluster contra el global
-(63.5\,\%) es una validación externa genuina, con dos hallazgos:
-(i) entre los 165 clusters con $n \geq 200$ el \% afirmativo se abre en una
-\textbf{banda amplia} —de 40.8\,\% a 89.7\,\% (mediana 59.2\,\%; 52 por encima
-del global y 113 por debajo)—, es decir, la \emph{vialidad concreta} sí lleva
-señal sobre la veracidad del reporte; y (ii) los nodos densos confirman
+(63.5\,\%) es una validación externa genuina, con dos hallazgos.
+Primero, entre los 165 clusters con $n \geq 200$ el \% afirmativo se abre en una
+\textbf{banda amplia} de 40.8\,\% a 89.7\,\% (mediana 59.2\,\%; 52 por encima
+del global y 113 por debajo), es decir, la \emph{vialidad concreta} sí lleva
+señal sobre la veracidad del reporte. Segundo, los nodos densos confirman
 \emph{por debajo} del global (58.9\,\% dentro de clusters vs.\ 64.9\,\% en el
 ruido): las vialidades de altísimo flujo acumulan proporcionalmente más
 reportes falsos/informativos (saturación, llamadas repetidas, sobre-reporte en
-hora pico). La implicación operativa es contraintuitiva y valiosa: un reporte
-sobre una vialidad saturada merece \emph{más} verificación, no menos.
+hora pico). De aquí podemos concluir que un reporte
+sobre una vialidad saturada merece \emph{más} verificación, no menos (esperabamos lo contrario).
 
 % ============================================================================
 % 8. ARQUITECTURA Y DISEÑO
@@ -698,10 +713,10 @@ organizado por responsabilidad: \texttt{src/preparacion.py} (limpieza de
 datos), \texttt{src/modelado.py} (clasificadores), \texttt{src/clustering.py}
 (agrupamiento), \texttt{src/viz.py} (graficado) y \texttt{src/config.py}
 (semilla, rutas y listas de variables). El diseño usa \textbf{herencia} donde
-es natural —los pasos de limpieza son subclases de \texttt{PasoLimpieza}, y
+es natural: los pasos de limpieza son subclases de \texttt{PasoLimpieza}, y
 \texttt{ModeloRandomForest} y \texttt{ModeloMLP} heredan de
 \texttt{ModeloClasificador} (comparten el flujo \emph{prep $\rightarrow$ clf} y
-solo cambian el tratamiento numérico y el estimador)— y \textbf{composición}
+solo cambian el tratamiento numérico y el estimador), y \textbf{composición}
 donde corresponde: \texttt{PipelinePreparacion} contiene una lista de pasos. La
 Figura~\ref{fig:uml} muestra el diagrama UML de clases.
 
@@ -714,24 +729,31 @@ Figura~\ref{fig:uml} muestra el diagrama UML de clases.
 \end{figure}
 
 \textbf{Patrón de diseño implementado: Pipeline, en dos niveles.}
-(i) \emph{Preparación de datos}: la clase \texttt{PipelinePreparacion}
+
+\begin{enumerate}
+  \item \emph{Preparación de datos}\\ 
+  La clase \texttt{PipelinePreparacion}
 encadena pasos atómicos de limpieza (\texttt{QuitarDuplicados} $\rightarrow$
 \texttt{QuitarAnioRuido} $\rightarrow$ \texttt{ConstruirTarget}, subclases de
 \texttt{PasoLimpieza}) y registra una bitácora auditable
 (Tabla~\ref{tab:pipe}); agregar, quitar o reordenar un paso es trivial y la
-trazabilidad queda impresa. (ii) \emph{Modelado}: el \texttt{Pipeline} de
+trazabilidad queda impresa.
+
+\item \emph{Modelado} \\
+El \texttt{Pipeline} de
 \texttt{scikit-learn} (construido por las clases de \texttt{src/modelado.py})
 encadena codificación $\rightarrow$ clasificador en un único objeto,
 garantizando que el preprocesamiento ajustado en entrenamiento se aplique
-idéntico en validación, prueba y producción —lo que además previene fugas de
+idéntico en validación, prueba y producción que a su vez previene fugas de
 preprocesamiento. Se eligió Pipeline porque el procesamiento del proyecto
 ocurre naturalmente en etapas secuenciales bien definidas (limpieza
 $\rightarrow$ codificación $\rightarrow$ modelo), y el patrón maximiza la
 reproducibilidad y la legibilidad del flujo.
+\end{enumerate}
 
 \textbf{Diagrama de flujo.} La Figura~\ref{fig:arquitectura} muestra el flujo completo:
-el pipeline de preparación (nivel i) produce el dataset de trabajo que
-consumen los tres notebooks, y el pipeline de modelado (nivel ii) encapsula
+el pipeline de preparación (1.) produce el dataset de trabajo que
+consumen los tres notebooks, y el pipeline de modelado (2.) encapsula
 preprocesamiento y clasificador en el objeto único que se persiste y recarga.
 
 \begin{figure}[H]\centering
@@ -787,11 +809,11 @@ persistencia/recarga del modelo.}
 
 El modelo final se serializa con \texttt{joblib} en
 \texttt{models/modelo\_rf.joblib} (43.1 MB). La última sección del notebook
-\texttt{02\_clasificacion.ipynb} lo \textbf{recarga desde disco} —simulando un
-servicio que consume el archivo sin reentrenar— y predice reportes nuevos
+\texttt{02\_clasificacion.ipynb} lo \textbf{recarga desde disco} simulando un
+servicio que consume el archivo sin reentrenar y predice reportes nuevos
 construidos a mano. La Tabla~\ref{tab:demo} muestra la salida real de la
-demostración: el modelo discrimina de forma coherente con el EDA (canales
-institucionales y zonas centrales al alza; llamada del 911 en la periferia y
+demostración. El modelo discrimina de forma coherente con el EDA (canales
+institucionales y zonas centrales al alza, llamada del 911 en la periferia y
 de madrugada a la baja).
 
 \begin{table}[H]
@@ -851,6 +873,43 @@ Botón de auxilio & Benito Juárez & Choque con lesionados & Mañana    & 0.895 
         decisión según el costo operativo del despacho y explorar una zona de
         abstención para derivar los casos ambiguos a verificación humana.
 \end{itemize}
+
+\section{Uso de Inteligencia Artificial Generativa}
+
+A lo largo de todas las tareas experimentamos con varios modelos de GenAI. De todos
+esos experimentos, encontramos que Claude es la que nos dió mejores resultados. Para 
+este proyecto, y debido a que solo soy un integrante, y el proyecto es bastante similar
+a las tareas y el examen 4 (que por suerte fue de \textbf{DBSCAN}), la mayoría del
+código escrito y redacción de documentos fue realizada por Claude, más especificamente
+Claude Code a través de ultracode para la subdelegación de tareas con modelos apropiados y 
+pasando como contexto todo el análisis, medidas, procedimientos, etc. de las tareas anteriores.
+Para las tareas que requerían buscar o arreglar alguna gráfica o bug, se le indico al
+coordinador asignar estas tareas al modelo Opus 4.8, y una vez identificado el problema
+se subdelegaba la implementación a Sonnet para ahorro de tokens manteniendo siempre una
+verificación. También se hicieron ciertos experimentos con Fable 5, pero no notamos gran
+diferencia respecto al desempeño de Opus 4.8, pero el consumo de tokens era absurdo, por lo que
+casi no se utilizo.
+
+Respecto al uso de tokens, todo se hizo sobre una única sesión de en total 25 horas,
+llegando a un consumo de casi 3.74 millones de tokens. Es una cantidad absurda, que se tuvo
+que repartir a lo largo de dos semanas en sesiónes de 5 horas. La distribución de uso fue:
+
+\begin{verbatim}
+Usage by model:
+  -opus-4-8:  153.5k input, 2.3m output, 268.1m cache read, 9.8m cache write
+  -haiku-4-5:  957.0k input, 27.6k output, 0 cache read, 0 cache write, 49 web search
+  -fable-5:  36.4k input, 345.0k output, 30.2m cache read, 2.4m cache write
+  -sonnet-4-6:  9 input, 1.8k output, 78.1k cache read, 15.1k cache write
+\end{verbatim}
+
+Por otro lado, todo el texto del reporte, quarto, notebooks y presentación
+fue revisado y editado por mí, llevando también la coordinación de que reportes se podían
+aplicar sobre el dataset y que medidas y desiciones tomar sobre los modelos. Un ejemplo 
+de esto fue la duplicación de reportes. En el momento donde se le pidió al agente que 
+entendiera el dataset, identificó que existían reportes duplicados, pero la decisión que
+tomo respecto a estos fue marcarlos como falsos. Esto provocaba que el entrenamiento de
+los modelos fuera incorrecto ya que de cierta forma se tenían reportes verdaderos y 
+falsos de un mismo incidente. 
 
 % ============================================================================
 % 11. REFERENCIAS  (formato APA — mínimo 5)
